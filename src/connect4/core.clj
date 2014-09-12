@@ -136,7 +136,7 @@
   (- *raw-nb* (inc (stack-size board col))))
 
 
-(c2dto1d [2 5])
+;;(c2dto1d [2 5])
 
 (let [y (stack-top test-board 5)
       id (c2dto1d [5 y])]
@@ -147,7 +147,7 @@
        id (c2dto1d [col y])]
     (assoc board id token)))
 
-(insert-token test-board 5 "F")
+;;(insert-token test-board 5 "F")
 
 ;;(count (take-while #(not= (get test-board %) BLANK) (reverse (get-column-1d 0))))
 ;;(stack-count test-board 2)
