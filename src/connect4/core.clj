@@ -16,7 +16,7 @@
 (def ^:dynamic *raw-nb* 6)
 ;; (def MAX_X (dec *column-nb*))
 ;; (def MAX_Y (dec *raw-nb*))
-(def BLANK \.)
+(def BLANK :.)
 
 (defn c2dto1d [v]
   (let [[x y] v]
@@ -97,7 +97,7 @@
         ]
     (apply str "\n" line "\n"
            (map #(let [pos (c1dto2d (dec %))
-                       c (get pieces-pos pos " ")]
+                       c (name (get pieces-pos pos " "))]
                    (if (zero? (mod % *column-nb*))
                            (format "| %s |\n%s\n" c line)
                            (format "| %s " c))) (range 1 (inc (* *column-nb* *raw-nb*)))))))
@@ -110,19 +110,19 @@
 ;;   (println board))
 
 (def initial-board
-  [\. \. \. \. \. \. \.
-   \. \. \. \. \. \. \.
-   \. \. \. \. \. \. \.
-   \. \. \. \. \. \. \.
-   \. \. \. \. \. \. \.
-   \. \. \. \. \. \. \.])
+  [:. :. :. :. :. :. :.
+   :. :. :. :. :. :. :.
+   :. :. :. :. :. :. :.
+   :. :. :. :. :. :. :.
+   :. :. :. :. :. :. :.
+   :. :. :. :. :. :. :.])
 (def test-board
-  [\. \. \. \. \. \. \.
-   \. \. \. \. \. \. \.
-   \. \. \. \. \. \. \o
-   \. \. \. \. \. \o \x
-   \. \x \o \x \o \o \o
-   \. \x \x \o \x \x \x])
+  [:. :. :. :. :. :. :.
+   :. :. :. :. :. :. :.
+   :. :. :. :. :. :. :o
+   :. :. :. :. :. :o :x
+   :. :x :o :x :o :o :o
+   :. :x :x :o :x :x :x])
 
 (defn is-valid? [board] true)
 
@@ -155,7 +155,7 @@
 ;;(map #(stack-top test-board %) (range *column-nb*))
 
 (defn apply-move [board move is-player1-turn]
-  (let [token (if is-player1-turn \x \o)
+  (let [token (if is-player1-turn :x :o)
         ]
     (insert-token board move token)))
 
