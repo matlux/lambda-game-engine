@@ -12,26 +12,26 @@
        (take-while identity)
        (map first)))
 
-(def ^:dynamic column-nb 7)
-(def ^:dynamic raw-nb 6)
-;; (def MAX_X (dec column-nb))
-;; (def MAX_Y (dec raw-nb))
+(def ^:dynamic *column-nb* 7)
+(def ^:dynamic *raw-nb* 6)
+;; (def MAX_X (dec *column-nb*))
+;; (def MAX_Y (dec *raw-nb*))
 (def BLANK \.)
 
 (defn c2dto1d [v]
   (let [[x y] v]
-    (+ x (* (inc raw-nb) y))))
+    (+ x (* (inc *raw-nb*) y))))
 
 (defn c1dto2d [i]
-  (vector (mod i column-nb) (int (/ i (inc raw-nb)))))
+  (vector (mod i *column-nb*) (int (/ i (inc *raw-nb*)))))
 
 ;;(c1dto2d 41)
 ;;(c2dto1d [6 0])
 ;;(c2dto1d [0 1])
 
 
-;;(count (map #(c2dto1d %) (map #(c1dto2d %) (range (* raw-nb column-nb)))))
-;;(count (map #(c1dto2d %) (range (* raw-nb column-nb))))
+;;(count (map #(c2dto1d %) (map #(c1dto2d %) (range (* *raw-nb* *column-nb*)))))
+;;(count (map #(c1dto2d %) (range (* *raw-nb* *column-nb*))))
 
 (defn- is-vertical? [[x1 y1] [x2 y2]]
   (zero? (- x1 x2)))
@@ -81,7 +81,7 @@
          #(not= BLANK (second %))
          (map
           #(vector (c1dto2d %1) %2 )
-          (range (* column-nb raw-nb))
+          (range (* *column-nb* *raw-nb*))
           pieces-list))))
 
 ;;(char2state initial-board)
@@ -92,15 +92,15 @@
 (generate-line 7)
 
 (defn render-board [board-state]
-  (let [line (generate-line column-nb)
+  (let [line (generate-line *column-nb*)
         pieces-pos board-state ;(into {} board-state)
         ]
     (apply str "\n" line "\n"
            (map #(let [pos (c1dto2d (dec %))
                        c (get pieces-pos pos " ")]
-                   (if (zero? (mod % column-nb))
+                   (if (zero? (mod % *column-nb*))
                            (format "| %s |\n%s\n" c line)
-                           (format "| %s " c))) (range 1 (inc (* column-nb raw-nb)))))))
+                           (format "| %s " c))) (range 1 (inc (* *column-nb* *raw-nb*)))))))
 
 
 (defn display-board [board]
@@ -127,13 +127,13 @@
 (defn is-valid? [board] true)
 
 (defn get-column-1d [col]
-  (pos-between-1d [col 0] [col raw-nb]))
+  (pos-between-1d [col 0] [col *raw-nb*]))
 
 (defn stack-size [board col]
   (->>  (take-while #(not= (get board %) BLANK) (reverse (get-column-1d col))) count))
 
 (defn stack-top [board col]
-  (- raw-nb (inc (stack-size board col))))
+  (- *raw-nb* (inc (stack-size board col))))
 
 
 (c2dto1d [2 5])
@@ -151,8 +151,8 @@
 
 ;;(count (take-while #(not= (get test-board %) BLANK) (reverse (get-column-1d 0))))
 ;;(stack-count test-board 2)
-;;(map #(stack-size test-board %) (range column-nb))
-;;(map #(stack-top test-board %) (range column-nb))
+;;(map #(stack-size test-board %) (range *column-nb*))
+;;(map #(stack-top test-board %) (range *column-nb*))
 
 (defn apply-move [board move is-player1-turn]
   (let [token (if is-player1-turn \x \o)
