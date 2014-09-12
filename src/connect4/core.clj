@@ -178,7 +178,7 @@
 
 (defn play-game-step [{:keys [board player1 player2 state-p1 state-p2 is-player1-turn] :as state}]
   (let [[step-player player-state] (if is-player1-turn [player1 state-p1] [player2 state-p2])
-        { move :move player-state :state} (dbg (step-player {:board board :is-player1-turn is-player1-turn :state player-state}))
+        { move :move player-state :state} (step-player {:board board :is-player1-turn is-player1-turn :state player-state})
         ]
     (if (not (is-valid? board))
       [false state]
