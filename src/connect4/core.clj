@@ -86,8 +86,13 @@
 
 ;;(char2state initial-board)
 
+(defn generate-line [n]
+  (apply str "+" (repeat n "---+")))
+
+(generate-line 7)
+
 (defn render-board [board-state]
-  (let [line "+---+---+---+---+---+---+---+"
+  (let [line (generate-line column-nb)
         pieces-pos board-state ;(into {} board-state)
         ]
     (apply str "\n" line "\n"
