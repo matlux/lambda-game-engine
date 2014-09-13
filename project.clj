@@ -6,5 +6,5 @@
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [org.clojure/algo.monads "0.1.4"]
                  [org.clojure/math.numeric-tower "0.0.3"]]
-  :main connect4.core
+  :main zone.lambda.game.connect4.core
   :jvm-opts ["-Djava.security.policy=java-security.policy"])

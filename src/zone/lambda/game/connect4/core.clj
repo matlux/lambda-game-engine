@@ -1,4 +1,4 @@
-(ns connect4.core
+(ns zone.lambda.game.connect4.core
   (:require
    [net.matlux.utils :refer [unfold dbg]]
    [zone.lambda.game.board :as board :refer [pos-between BLANK]]
