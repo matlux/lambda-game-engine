@@ -1,16 +1,18 @@
 (ns connect4.core
   (:require
    [net.matlux.utils :refer [unfold dbg]]
-   [zone.lambda.game.board :refer [pos-between pos-between-1d *column-nb* *raw-nb* BLANK c2dto1d c1dto2d display-board]]
-   [zone.lambda.game.engine :refer [game-step-monad-wrap play-game-seq seq-result interactive-player]]
+   [zone.lambda.game.board :as board :refer [pos-between BLANK]]
+   [zone.lambda.game.engine :as engine :refer [game-step-monad-wrap play-game-seq seq-result]]
    )
   )
 
-
-
-
-;; (defn display-board [board]
-;;   (println board))
+(def column-nb 7)
+(def raw-nb 6)
+(def c2dto1d (partial board/c2dto1d column-nb))
+(def c1dto2d (partial board/c1dto2d column-nb))
+(def pos-between-1d (partial board/pos-between-1d column-nb))
+(def display-board (partial board/display-board raw-nb column-nb))
+(def interactive-player (engine/interactive-player display-board))
 
 (def initial-board
   [:. :. :. :. :. :. :.
@@ -30,13 +32,13 @@
 (defn is-valid? [board] true)
 
 (defn get-column-1d [col]
-  (pos-between-1d [col 0] [col *raw-nb*]))
+  (pos-between-1d [col 0] [col raw-nb]))
 
 (defn stack-size [board col]
   (->>  (take-while #(not= (get board %) BLANK) (reverse (get-column-1d col))) count))
 
 (defn stack-top [board col]
-  (- *raw-nb* (inc (stack-size board col))))
+  (- raw-nb (inc (stack-size board col))))
 
 
 
@@ -49,8 +51,8 @@
 
 ;;(count (take-while #(not= (get test-board %) BLANK) (reverse (get-column-1d 0))))
 ;;(stack-count test-board 2)
-;;(map #(stack-size test-board %) (range *column-nb*))
-;;(map #(stack-top test-board %) (range *column-nb*))
+;;(map #(stack-size test-board %) (range column-nb))
+;;(map #(stack-top test-board %) (range column-nb))
 
 (defn apply-move [board move is-player1-turn]
   (let [token (if is-player1-turn :x :o)
@@ -60,7 +62,7 @@
 ;;(apply-move test-board 5 false)
 
 
-;;(-> (apply-move initial-board 0 false) (apply-move 1 true) (apply-move 0 false))
+;;(-> (apply-move *initial-board* 0 false) (apply-move 1 true) (apply-move 0 false))
 
 (defn test-if-finished [board]
   false)
@@ -89,7 +91,7 @@
 
 
 (defn -main []
- (seq-result (play-game-seq game-step  {:player1 interactive-player :player2 interactive-player})))
+ (seq-result (play-game-seq game-step  {:board initial-board :player1 interactive-player :player2 interactive-player})))
 
 ;;(play initial-board p1 p2)
 

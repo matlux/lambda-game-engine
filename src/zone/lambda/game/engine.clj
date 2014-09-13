@@ -1,17 +1,16 @@
 (ns zone.lambda.game.engine
   (:require
    [net.matlux.utils :refer [unfold dbg]]
-   [zone.lambda.game.board :refer [display-board *initial-board*]]
+   [zone.lambda.game.board :refer [display-board]]
    [clojure.algo.monads :as m :refer [domonad state-m fetch-state fetch-val]]))
 
-(defn interactive-player [{board :board is-player1-turn :is-player1-turn}]
-  (display-board board)
-  (let [move (read-string (read-line))]
-    {:move move}))
+(defn interactive-player [display-board]
+  (fn [{board :board is-player1-turn :is-player1-turn}]
+     (display-board board)
+     (let [move (read-string (read-line))]
+       {:move move})))
 
 ;;(interactive-player {:board initial-board :is-player1-turn true :player1 initial-board :player2 initial-board})
-
-
 
 (defn game-step-monad-wrap [game-step]
   (domonad state-m
@@ -23,8 +22,6 @@
 
            ))
 
-
-
 ;; this function is central to the chess engine
 (defn game-seq [monadic-step init-state]
   (unfold
@@ -33,7 +30,7 @@
    ))
 
 (defn play-game-seq [step game-init]
-  (let [state (merge {:board *initial-board* :is-player1-turn true :game-id (str (java.util.UUID/randomUUID))} game-init)]
+  (let [state (merge {:is-player1-turn true :game-id (str (java.util.UUID/randomUUID))} game-init)]
     (game-seq step state)))
 
 
@@ -56,8 +53,8 @@
     [(create-fn white-moves)
      (create-fn black-moves)]))
 
-(defn play-scenario-seq [step scenario] (let [[f1 f2] (create-fns-from-scenario scenario)]
-                                 (let [result (play-game-seq step {:f1 f1 :f2 f2})]
+(defn play-scenario-seq [initial-board step scenario] (let [[f1 f2] (create-fns-from-scenario scenario)]
+                                 (let [result (play-game-seq step {:board initial-board :f1 f1 :f2 f2})]
                                    (take (count scenario) result))))
 
 (defn seq-result [s]
