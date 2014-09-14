@@ -30,7 +30,7 @@
   (let [[b1 b2] (if (= (.compareTo y2 y1) 1) [y1 y2] [y2 y1])]
       (for [a (range (inc b1) b2)] [x1 a])))
 
-(defn- pos-between-xy [[x1 y1] [x2 y2]]
+(defn pos-between-xy [[x1 y1] [x2 y2]]
   {:pre [(let [absslop (math/abs (/ (- y2 y1) (- x2 x1)))]
            ;(println absslop)
            (or (= absslop 1)

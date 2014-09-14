@@ -3,66 +3,66 @@
             [zone.lambda.game.chess.core :refer :all]))
 
 (def en-passant-check-board ;; it's white's turn
-  [\r \- \b \q \k \b \n \r
-   \p \p \- \- \- \p \p \p
-   \- \- \- \- \- \- \- \-
-   \n \- \p \P \p \- \- \Q
-   \- \- \B \- \- \- \- \-
-   \- \- \- \- \- \- \- \N
-   \P \P \P \P \- \P \P \P
-   \R \N \B \- \K \- \- \R])
+  [:r :. :b :q :k :b :n :r
+   :p :p :. :. :. :p :p :p
+   :. :. :. :. :. :. :. :.
+   :n :. :p :P :p :. :. :Q
+   :. :. :B :. :. :. :. :.
+   :. :. :. :. :. :. :. :N
+   :P :P :P :P :. :P :P :P
+   :R :N :B :. :K :. :. :R])
 
 (def en-passant-check-board2 ;; it's white's turn
-  [\r \- \b \q \k \b \n \r
-   \p \p \- \- \- \p \p \p
-   \- \- \p \- \- \- \- \-
-   \n \- \- \P \p \- \- \Q
-   \- \- \B \- \- \- \- \-
-   \- \- \- \- \- \- \- \N
-   \P \P \P \P \- \P \P \P
-   \R \N \B \- \K \- \- \R])
+  [:r :. :b :q :k :b :n :r
+   :p :p :. :. :. :p :p :p
+   :. :. :p :. :. :. :. :.
+   :n :. :. :P :p :. :. :Q
+   :. :. :B :. :. :. :. :.
+   :. :. :. :. :. :. :. :N
+   :P :P :P :P :. :P :P :P
+   :R :N :B :. :K :. :. :R])
 
 (def castle-check-board ;; it's white's turn
-  [\r \- \b \q \k \b \n \r
-   \p \p \- \- \- \p \p \p
-   \- \- \- \- \- \- \- \-
-   \n \- \p \P \p \- \- \Q
-   \- \- \B \- \- \- \- \-
-   \- \- \- \- \- \- \- \N
-   \P \P \P \P \- \P \P \P
-   \R \N \B \- \K \- \- \R])
+  [:r :. :b :q :k :b :n :r
+   :p :p :. :. :. :p :p :p
+   :. :. :. :. :. :. :. :.
+   :n :. :p :P :p :. :. :Q
+   :. :. :B :. :. :. :. :.
+   :. :. :. :. :. :. :. :N
+   :P :P :P :P :. :P :P :P
+   :R :N :B :. :K :. :. :R])
 
 (def could-become-in-check-board ;; it's black's turn
-  [\r \- \b \q \k \b \n \r
-   \p \p \p \p \- \p \p \p
-   \- \- \n \- \- \- \- \-
-   \- \- \- \- \p \- \- \Q
-   \- \- \B \- \P \- \- \-
-   \- \- \- \- \- \- \- \-
-   \P \P \P \P \- \P \P \P
-   \R \N \B \- \K \- \N \R])
+  [:r :. :b :q :k :b :n :r
+   :p :p :p :p :. :p :p :p
+   :. :. :n :. :. :. :. :.
+   :. :. :. :. :p :. :. :Q
+   :. :. :B :. :P :. :. :.
+   :. :. :. :. :. :. :. :.
+   :P :P :P :P :. :P :P :P
+   :R :N :B :. :K :. :N :R])
 
 
 (def in-check-board  ;; it's blacks turn, king is in check.
-  [\r \- \b \q \- \b \n \r
-   \p \p \p \p \k \Q \p \p
-   \- \- \n \- \- \p \- \-
-   \- \- \- \- \p \- \- \-
-   \- \- \B \- \P \- \- \-
-   \- \- \- \- \- \- \- \-
-   \P \P \P \P \- \P \P \P
-   \R \N \B \- \K \- \N \R])
+  [:r :. :b :q :. :b :n :r
+   :p :p :p :p :k :Q :p :p
+   :. :. :n :. :. :p :. :.
+   :. :. :. :. :p :. :. :.
+   :. :. :B :. :P :. :. :.
+   :. :. :. :. :. :. :. :.
+   :P :P :P :P :. :P :P :P
+   :R :N :B :. :K :. :N :R])
 
 
 (def check-mate-board  ;; it's blacks turn, king is in check. no move will save him => check mate
-  [\r \- \b \q \k \b \n \r
-   \p \p \p \p \- \Q \p \p
-   \- \- \n \- \- \p \- \-
-   \- \- \- \- \p \- \- \-
-   \- \- \B \- \P \- \- \-
-   \- \- \- \- \- \- \- \-
-   \P \P \P \P \- \P \P \P
-   \R \N \B \- \K \- \N \R])
+  [:r :. :b :q :k :b :n :r
+   :p :p :p :p :. :Q :p :p
+   :. :. :n :. :. :p :. :.
+   :. :. :. :. :p :. :. :.
+   :. :. :B :. :P :. :. :.
+   :. :. :. :. :. :. :. :.
+   :P :P :P :P :. :P :P :P
+   :R :N :B :. :K :. :N :R])
 
 (deftest test-filing
   (testing ""
@@ -118,40 +118,40 @@
 
 (deftest test-color
   (testing "test color"
-    (is (= (is-white? \K)
+    (is (= (is-white? :K)
            true))))
 (deftest test-color2
   (testing "test color"
-    (is (= (is-white? \k)
+    (is (= (is-white? :k)
            false))))
 (deftest test-color3
   (testing "test color"
-    (is (= (is-white? \-)
+    (is (= (is-white? :.)
            false))))
 (deftest test-color4
   (testing "test color"
-    (is (= (is-black? \K)
+    (is (= (is-black? :K)
            false))))
 (deftest test-color5
   (testing "test color"
-    (is (= (is-black? \k)
+    (is (= (is-black? :k)
            true))))
 (deftest test-color6
   (testing "test color"
-    (is (= (is-black? \-)
+    (is (= (is-black? :.)
            false))))
 
 (deftest test-presence-of-piece
   (testing "test absence of piece"
-    (is (= (is-piece? \-)
+    (is (= (is-piece? :.)
            false))))
 (deftest test-presence-of-piece2
   (testing "test presence of piece - with a white piece"
-    (is (= (is-piece? \P)
+    (is (= (is-piece? :P)
            true))))
 (deftest test-presence-of-piece3
   (testing "test presence of piece - with a black piece"
-    (is (= (is-piece? \k)
+    (is (= (is-piece? :k)
            true))))
 
 (deftest test-opposite-collision
@@ -214,23 +214,23 @@
 (deftest test-lookup
   (testing "return piece Character from an algebraic notation given a board state - White Rook"
     (is (= (lookup (initial-board) "a1")
-           \R))))
+           :R))))
 (deftest test-lookup2
   (testing "White Queen"
     (is (= (lookup (initial-board) "d1")
-           \Q))))
+           :Q))))
 (deftest test-lookup3
   (testing "White Pawn"
     (is (= (lookup (initial-board) "d2")
-           \P))))
+           :P))))
 (deftest test-lookup4
   (testing "Black King "
     (is (= (lookup (initial-board) "e8")
-           \k))))
+           :k))))
 (deftest test-lookup5
   (testing "empty square"
     (is (= (lookup (initial-board) "e3")
-           \-))))
+           :.))))
 
 (deftest test-find-king-position
   (testing "find black king"
@@ -320,14 +320,14 @@
                     ["d1" "h5"] ["d7" "d6"]
                     ["f1" "c4"] ["b8" "c6"]
                     ["h5" "f7"] ]
-          :board [\r \- \b \q \k \b \n \r
-            \p \p \p \- \- \Q \p \p
-            \- \- \n \p \- \- \- \-
-            \- \- \- \- \p \- \- \-
-            \- \- \B \- \P \- \- \-
-            \- \- \- \- \- \- \- \-
-            \P \P \P \P \- \P \P \P
-            \R \N \B \- \K \- \N \R]
+          :board [:r :. :b :q :k :b :n :r
+            :p :p :p :. :. :Q :p :p
+            :. :. :n :p :. :. :. :.
+            :. :. :. :. :p :. :. :.
+            :. :. :B :. :P :. :. :.
+            :. :. :. :. :. :. :. :.
+            :P :P :P :P :. :P :P :P
+            :R :N :B :. :K :. :N :R]
            :result :check-mate}))))
 
 
@@ -344,14 +344,14 @@
                   ["d1" "h5"] ["d7" "d6"]
                   ["f1" "c4"] ["b8" "c6"]
                   ["h5" "h8"] ]
-          :board [\r \- \b \q \k \b \n \r
-            \p \p \p \- \- \p \p \p
-            \- \- \n \p \- \- \- \-
-            \- \- \- \- \p \- \- \Q
-            \- \- \B \- \P \- \- \-
-            \- \- \- \- \- \- \- \-
-            \P \P \P \P \- \P \P \P
-            \R \N \B \- \K \- \N \R]
+          :board [:r :. :b :q :k :b :n :r
+            :p :p :p :. :. :p :p :p
+            :. :. :n :p :. :. :. :.
+            :. :. :. :. :p :. :. :Q
+            :. :. :B :. :P :. :. :.
+            :. :. :. :. :. :. :. :.
+            :P :P :P :P :. :P :P :P
+            :R :N :B :. :K :. :N :R]
           :result :invalid-move}))))
 
 (deftest a-subtle-invalid-move-from-white-game
@@ -366,14 +366,14 @@
                   ["d1" "h5"] ["d7" "d6"]
                   ["f1" "c4"] ["b8" "c6"]
                   ["h5" "f6"] ]
-          :board [\r \- \b \q \k \b \n \r
-            \p \p \p \- \- \p \p \p
-            \- \- \n \p \- \- \- \-
-            \- \- \- \- \p \- \- \Q
-            \- \- \B \- \P \- \- \-
-            \- \- \- \- \- \- \- \-
-            \P \P \P \P \- \P \P \P
-            \R \N \B \- \K \- \N \R]
+          :board [:r :. :b :q :k :b :n :r
+            :p :p :p :. :. :p :p :p
+            :. :. :n :p :. :. :. :.
+            :. :. :. :. :p :. :. :Q
+            :. :. :B :. :P :. :. :.
+            :. :. :. :. :. :. :. :.
+            :P :P :P :P :. :P :P :P
+            :R :N :B :. :K :. :N :R]
           :result :invalid-move}))))
 
 (deftest an-invalid-move-game2
@@ -388,14 +388,14 @@
                     ["d1" "h5"] ["d7" "d6"]
                     ["f1" "c4"] ["b8" "c6"]
                     ["h5" "g6"] ["e8" "d8"]]
-          :board [\r \- \b \q \k \b \n \r
-           \p \p \p \- \- \p \p \p
-           \- \- \n \p \- \- \Q \-
-           \- \- \- \- \p \- \- \-
-           \- \- \B \- \P \- \- \-
-           \- \- \- \- \- \- \- \-
-           \P \P \P \P \- \P \P \P
-           \R \N \B \- \K \- \N \R]
+          :board [:r :. :b :q :k :b :n :r
+           :p :p :p :. :. :p :p :p
+           :. :. :n :p :. :. :Q :.
+           :. :. :. :. :p :. :. :.
+           :. :. :B :. :P :. :. :.
+           :. :. :. :. :. :. :. :.
+           :P :P :P :P :. :P :P :P
+           :R :N :B :. :K :. :N :R]
           :result :invalid-move}))))
 
 (deftest cannot-move-into-check-case-game
@@ -408,14 +408,14 @@
          {:score [1 0]
           :history [["e2" "e4"] ["e7" "e5"]
                   ["d1" "h5"] ["f7" "f6"]]
-          :board [\r \n \b \q \k \b \n \r
-            \p \p \p \p \- \p \p \p
-            \- \- \- \- \- \- \- \-
-            \- \- \- \- \p \- \- \Q
-            \- \- \- \- \P \- \- \-
-            \- \- \- \- \- \- \- \-
-            \P \P \P \P \- \P \P \P
-            \R \N \B \- \K \B \N \R]
+          :board [:r :n :b :q :k :b :n :r
+            :p :p :p :p :. :p :p :p
+            :. :. :. :. :. :. :. :.
+            :. :. :. :. :p :. :. :Q
+            :. :. :. :. :P :. :. :.
+            :. :. :. :. :. :. :. :.
+            :P :P :P :P :. :P :P :P
+            :R :N :B :. :K :B :N :R]
           :result :invalid-move}))))
 
 (deftest en-passant-case-game
@@ -428,14 +428,14 @@
           :history [["e2" "e4"] ["d7" "d5"]
                   ["e4" "d5"] ["e7" "e5"]
                   ["d5" "e6"] ["d5" "e6"]]
-          :board [\r \n \b \q \k \b \n \r
-            \p \p \p \- \- \p \p \p
-            \- \- \- \- \P \- \- \-
-            \- \- \- \- \- \- \- \-
-            \- \- \- \- \- \- \- \-
-            \- \- \- \- \- \- \- \-
-            \P \P \P \P \- \P \P \P
-            \R \N \B \Q \K \B \N \R]
+          :board [:r :n :b :q :k :b :n :r
+            :p :p :p :. :. :p :p :p
+            :. :. :. :. :P :. :. :.
+            :. :. :. :. :. :. :. :.
+            :. :. :. :. :. :. :. :.
+            :. :. :. :. :. :. :. :.
+            :P :P :P :P :. :P :P :P
+            :R :N :B :Q :K :B :N :R]
           :result :invalid-move}))))
 
 (deftest en-passant-case-game2
@@ -448,14 +448,14 @@
           :history [["e2" "e4"] ["d7" "d5"]
                   ["e4" "d5"] ["c7" "c5"]
                   ["d5" "c6"] ["d5" "c6"]]
-          :board [\r \n \b \q \k \b \n \r
-            \p \p \- \- \p \p \p \p
-            \- \- \P \- \- \- \- \-
-            \- \- \- \- \- \- \- \-
-            \- \- \- \- \- \- \- \-
-            \- \- \- \- \- \- \- \-
-            \P \P \P \P \- \P \P \P
-            \R \N \B \Q \K \B \N \R]
+          :board [:r :n :b :q :k :b :n :r
+            :p :p :. :. :p :p :p :p
+            :. :. :P :. :. :. :. :.
+            :. :. :. :. :. :. :. :.
+            :. :. :. :. :. :. :. :.
+            :. :. :. :. :. :. :. :.
+            :P :P :P :P :. :P :P :P
+            :R :N :B :Q :K :B :N :R]
           :result :invalid-move}))))
 
 (deftest en-passant-case-game3
@@ -468,14 +468,14 @@
           :history [["e2" "e4"] ["f7" "f5"]
                   ["g2" "g4"] ["f5" "f4"]
                   ["b1" "a3"] ["f4" "e3"]]
-          :board [\r \n \b \q \k \b \n \r
-            \p \p \p \p \p \- \p \p
-            \- \- \- \- \- \- \- \-
-            \- \- \- \- \- \- \- \-
-            \- \- \- \- \P \p \P \-
-            \N \- \- \- \- \- \- \-
-            \P \P \P \P \- \P \- \P
-            \R \- \B \Q \K \B \N \R]
+          :board [:r :n :b :q :k :b :n :r
+            :p :p :p :p :p :. :p :p
+            :. :. :. :. :. :. :. :.
+            :. :. :. :. :. :. :. :.
+            :. :. :. :. :P :p :P :.
+            :N :. :. :. :. :. :. :.
+            :P :P :P :P :. :P :. :P
+            :R :. :B :Q :K :B :N :R]
 
           :result :invalid-move}))))
 
@@ -491,14 +491,14 @@
                   ["b1" "a3"] ["f5" "f4"]
                   ["g2" "g4"] ["f4" "g3"]
                   nil]
-          :board [\r \n \b \q \k \b \n \r
-            \p \p \p \p \p \- \p \p
-            \- \- \- \- \- \- \- \-
-            \- \- \- \- \- \- \- \-
-            \- \- \- \- \P \- \- \-
-            \N \- \- \- \- \- \p \-
-            \P \P \P \P \- \P \- \P
-            \R \- \B \Q \K \B \N \R]
+          :board [:r :n :b :q :k :b :n :r
+            :p :p :p :p :p :. :p :p
+            :. :. :. :. :. :. :. :.
+            :. :. :. :. :. :. :. :.
+            :. :. :. :. :P :. :. :.
+            :N :. :. :. :. :. :p :.
+            :P :P :P :P :. :P :. :P
+            :R :. :B :Q :K :B :N :R]
 
           :result :invalid-move}))))
 
@@ -514,14 +514,14 @@
                   ["b1" "a3"] ["f5" "f4"]
                   ["e2" "e4"] ["f4" "g3"]
                   ]
-          :board [\r \n \b \q \k \b \n \r
-            \p \p \p \p \p \- \p \p
-            \- \- \- \- \- \- \- \-
-            \- \- \- \- \- \- \- \-
-            \- \- \- \- \P \p \P \-
-            \N \- \- \- \- \- \- \-
-            \P \P \P \P \- \P \- \P
-            \R \- \B \Q \K \B \N \R]
+          :board [:r :n :b :q :k :b :n :r
+            :p :p :p :p :p :. :p :p
+            :. :. :. :. :. :. :. :.
+            :. :. :. :. :. :. :. :.
+            :. :. :. :. :P :p :P :.
+            :N :. :. :. :. :. :. :.
+            :P :P :P :P :. :P :. :P
+            :R :. :B :Q :K :B :N :R]
 
           :result :invalid-move}))))
 
@@ -537,14 +537,14 @@
                   ["b1" "a3"] ["f5" "f4"]
                   ["e2" "e4"] ["f4" "e3"]
                   nil]
-          :board [\r \n \b \q \k \b \n \r
-            \p \p \p \p \p \- \p \p
-            \- \- \- \- \- \- \- \-
-            \- \- \- \- \- \- \- \-
-            \- \- \- \- \- \- \P \-
-            \N \- \- \- \p \- \- \-
-            \P \P \P \P \- \P \- \P
-            \R \- \B \Q \K \B \N \R]
+          :board [:r :n :b :q :k :b :n :r
+            :p :p :p :p :p :. :p :p
+            :. :. :. :. :. :. :. :.
+            :. :. :. :. :. :. :. :.
+            :. :. :. :. :. :. :P :.
+            :N :. :. :. :p :. :. :.
+            :P :P :P :P :. :P :. :P
+            :R :. :B :Q :K :B :N :R]
 
           :result :invalid-move}))))
 
@@ -566,14 +566,14 @@
     (is (= (dissoc (play-game {:board (initial-board) :f1 exception-f :f2 exception-f}) :stacktrace)
            {:score [0 1]
             :history [:exception]
-            :board [\r \n \b \q \k \b \n \r
-              \p \p \p \p \p \p \p \p
-              \- \- \- \- \- \- \- \-
-              \- \- \- \- \- \- \- \-
-              \- \- \- \- \- \- \- \-
-              \- \- \- \- \- \- \- \-
-              \P \P \P \P \P \P \P \P
-              \R \N \B \Q \K \B \N \R]
+            :board [:r :n :b :q :k :b :n :r
+              :p :p :p :p :p :p :p :p
+              :. :. :. :. :. :. :. :.
+              :. :. :. :. :. :. :. :.
+              :. :. :. :. :. :. :. :.
+              :. :. :. :. :. :. :. :.
+              :P :P :P :P :P :P :P :P
+              :R :N :B :Q :K :B :N :R]
             :exception "java.lang.Exception: this is an exception"
             :result :caught-exception}))))
 (deftest function-garbage-move
@@ -581,14 +581,14 @@
     (is (= (play-game {:board (initial-board) :f1 garbage-f :f2 garbage-f})
            {:score [0 1]
             :history [-1]
-            :board [\r \n \b \q \k \b \n \r
-              \p \p \p \p \p \p \p \p
-              \- \- \- \- \- \- \- \-
-              \- \- \- \- \- \- \- \-
-              \- \- \- \- \- \- \- \-
-              \- \- \- \- \- \- \- \-
-              \P \P \P \P \P \P \P \P
-              \R \N \B \Q \K \B \N \R]
+            :board [:r :n :b :q :k :b :n :r
+              :p :p :p :p :p :p :p :p
+              :. :. :. :. :. :. :. :.
+              :. :. :. :. :. :. :. :.
+              :. :. :. :. :. :. :. :.
+              :. :. :. :. :. :. :. :.
+              :P :P :P :P :P :P :P :P
+              :R :N :B :Q :K :B :N :R]
             :result :invalid-move}))))
 
 
@@ -598,29 +598,31 @@
     (is (= (play-game {:board (initial-board) :f1  (fn [_] {:move ["e9" "e4"]}) :f2 garbage-f})
            {:score [0 1]
             :history [["e9" "e4"]]
-            :board [\r \n \b \q \k \b \n \r
-              \p \p \p \p \p \p \p \p
-              \- \- \- \- \- \- \- \-
-              \- \- \- \- \- \- \- \-
-              \- \- \- \- \- \- \- \-
-              \- \- \- \- \- \- \- \-
-              \P \P \P \P \P \P \P \P
-              \R \N \B \Q \K \B \N \R]
+            :board [:r :n :b :q :k :b :n :r
+              :p :p :p :p :p :p :p :p
+              :. :. :. :. :. :. :. :.
+              :. :. :. :. :. :. :. :.
+              :. :. :. :. :. :. :. :.
+              :. :. :. :. :. :. :. :.
+              :P :P :P :P :P :P :P :P
+              :R :N :B :Q :K :B :N :R]
             :result :invalid-move}))))
+
+;; (play-game-seq game-step (merge {:board (initial-board) :f1  (fn [_] ["e8" "A4"]) :f2 garbage-f} {:board (initial-board) :history []}))
 
 (deftest function-garbage-move3
   (testing "upper case move don't work"
     (is (= (play-game {:board (initial-board) :f1  (fn [_] ["e8" "A4"]) :f2 garbage-f})
            {:score [0 1]
             :history [["e8" "A4"]]
-            :board [\r \n \b \q \k \b \n \r
-              \p \p \p \p \p \p \p \p
-              \- \- \- \- \- \- \- \-
-              \- \- \- \- \- \- \- \-
-              \- \- \- \- \- \- \- \-
-              \- \- \- \- \- \- \- \-
-              \P \P \P \P \P \P \P \P
-              \R \N \B \Q \K \B \N \R]
+            :board [:r :n :b :q :k :b :n :r
+              :p :p :p :p :p :p :p :p
+              :. :. :. :. :. :. :. :.
+              :. :. :. :. :. :. :. :.
+              :. :. :. :. :. :. :. :.
+              :. :. :. :. :. :. :. :.
+              :P :P :P :P :P :P :P :P
+              :R :N :B :Q :K :B :N :R]
             :result :invalid-move}))))
 
 (deftest function-garbage-move4
@@ -636,14 +638,14 @@
     (is (= (play-game {:board (initial-board) :f1  (fn [_] ["e0" "a4"]) :f2 garbage-f})
            {:score [0 1]
             :history [["e0" "a4"]]
-            :board [\r \n \b \q \k \b \n \r
-              \p \p \p \p \p \p \p \p
-              \- \- \- \- \- \- \- \-
-              \- \- \- \- \- \- \- \-
-              \- \- \- \- \- \- \- \-
-              \- \- \- \- \- \- \- \-
-              \P \P \P \P \P \P \P \P
-              \R \N \B \Q \K \B \N \R]
+            :board [:r :n :b :q :k :b :n :r
+              :p :p :p :p :p :p :p :p
+              :. :. :. :. :. :. :. :.
+              :. :. :. :. :. :. :. :.
+              :. :. :. :. :. :. :. :.
+              :. :. :. :. :. :. :. :.
+              :P :P :P :P :P :P :P :P
+              :R :N :B :Q :K :B :N :R]
             :result :invalid-move}))))
 
 (deftest function-f1-vs-f2-check-mate
@@ -654,14 +656,14 @@
                     ["d1" "h5"] ["d7" "d6"]
                     ["f1" "c4"] ["b8" "c6"]
                     ["h5" "f7"] ]
-          :board [\r \- \b \q \k \b \n \r
-            \p \p \p \- \- \Q \p \p
-            \- \- \n \p \- \- \- \-
-            \- \- \- \- \p \- \- \-
-            \- \- \B \- \P \- \- \-
-            \- \- \- \- \- \- \- \-
-            \P \P \P \P \- \P \P \P
-            \R \N \B \- \K \- \N \R]
+          :board [:r :. :b :q :k :b :n :r
+            :p :p :p :. :. :Q :p :p
+            :. :. :n :p :. :. :. :.
+            :. :. :. :. :p :. :. :.
+            :. :. :B :. :P :. :. :.
+            :. :. :. :. :. :. :. :.
+            :P :P :P :P :. :P :P :P
+            :R :N :B :. :K :. :N :R]
            :result :check-mate}))))
 
 (def weird-obj (java.lang.Thread.))
@@ -671,14 +673,14 @@
     (is (= (play-game {:board (initial-board) :f1 (fn [_] {:move [weird-obj ""] :state nil}) :f2 garbage-f})
            {:score [0 1]
             :history [[weird-obj ""]]
-            :board [\r \n \b \q \k \b \n \r
-              \p \p \p \p \p \p \p \p
-              \- \- \- \- \- \- \- \-
-              \- \- \- \- \- \- \- \-
-              \- \- \- \- \- \- \- \-
-              \- \- \- \- \- \- \- \-
-              \P \P \P \P \P \P \P \P
-              \R \N \B \Q \K \B \N \R]
+            :board [:r :n :b :q :k :b :n :r
+              :p :p :p :p :p :p :p :p
+              :. :. :. :. :. :. :. :.
+              :. :. :. :. :. :. :. :.
+              :. :. :. :. :. :. :. :.
+              :. :. :. :. :. :. :. :.
+              :P :P :P :P :P :P :P :P
+              :R :N :B :Q :K :B :N :R]
             :result :invalid-move}))))
 
 (deftest function-garbage-move6
@@ -686,14 +688,14 @@
     (is (= (play-game {:board (initial-board) :f1 (fn [_] [[weird-obj ""] nil]) :f2 garbage-f})
            {:score [0 1]
             :history [[[weird-obj ""] nil]]
-            :board [\r \n \b \q \k \b \n \r
-              \p \p \p \p \p \p \p \p
-              \- \- \- \- \- \- \- \-
-              \- \- \- \- \- \- \- \-
-              \- \- \- \- \- \- \- \-
-              \- \- \- \- \- \- \- \-
-              \P \P \P \P \P \P \P \P
-              \R \N \B \Q \K \B \N \R]
+            :board [:r :n :b :q :k :b :n :r
+              :p :p :p :p :p :p :p :p
+              :. :. :. :. :. :. :. :.
+              :. :. :. :. :. :. :. :.
+              :. :. :. :. :. :. :. :.
+              :. :. :. :. :. :. :. :.
+              :P :P :P :P :P :P :P :P
+              :R :N :B :Q :K :B :N :R]
             :result :invalid-move}))))
 
 (deftest function-garbage-move7
@@ -701,14 +703,14 @@
     (is (= (play-game {:board (initial-board) :f1 (fn [_] [[-1 0.9] [true false]]) :f2 garbage-f})
            {:score [0 1]
             :history [[[-1 0.9] [true false]]]
-            :board [\r \n \b \q \k \b \n \r
-              \p \p \p \p \p \p \p \p
-              \- \- \- \- \- \- \- \-
-              \- \- \- \- \- \- \- \-
-              \- \- \- \- \- \- \- \-
-              \- \- \- \- \- \- \- \-
-              \P \P \P \P \P \P \P \P
-              \R \N \B \Q \K \B \N \R]
+            :board [:r :n :b :q :k :b :n :r
+              :p :p :p :p :p :p :p :p
+              :. :. :. :. :. :. :. :.
+              :. :. :. :. :. :. :. :.
+              :. :. :. :. :. :. :. :.
+              :. :. :. :. :. :. :. :.
+              :P :P :P :P :P :P :P :P
+              :R :N :B :Q :K :B :N :R]
             :result :invalid-move}))))
 
 
@@ -717,14 +719,14 @@
     (is (= (play-game {:board (initial-board) :f1 invalid-move-f :f2 invalid-move-f})
            {:score [0 1]
             :history [nil]
-            :board [\r \n \b \q \k \b \n \r
-              \p \p \p \p \p \p \p \p
-              \- \- \- \- \- \- \- \-
-              \- \- \- \- \- \- \- \-
-              \- \- \- \- \- \- \- \-
-              \- \- \- \- \- \- \- \-
-              \P \P \P \P \P \P \P \P
-              \R \N \B \Q \K \B \N \R]
+            :board [:r :n :b :q :k :b :n :r
+              :p :p :p :p :p :p :p :p
+              :. :. :. :. :. :. :. :.
+              :. :. :. :. :. :. :. :.
+              :. :. :. :. :. :. :. :.
+              :. :. :. :. :. :. :. :.
+              :P :P :P :P :P :P :P :P
+              :R :N :B :Q :K :B :N :R]
             :result :invalid-move}))))
 
 (deftest function-nil-move2
@@ -732,14 +734,14 @@
     (is (= (play-game {:board (initial-board) :f1 (fn [_] ["e2" "e4"]) :f2 invalid-move-f})
            {:score [1 0]
             :history [["e2" "e4"] nil]
-            :board [\r \n \b \q \k \b \n \r
-              \p \p \p \p \p \p \p \p
-              \- \- \- \- \- \- \- \-
-              \- \- \- \- \- \- \- \-
-              \- \- \- \- \P \- \- \-
-              \- \- \- \- \- \- \- \-
-              \P \P \P \P \- \P \P \P
-              \R \N \B \Q \K \B \N \R]
+            :board [:r :n :b :q :k :b :n :r
+              :p :p :p :p :p :p :p :p
+              :. :. :. :. :. :. :. :.
+              :. :. :. :. :. :. :. :.
+              :. :. :. :. :P :. :. :.
+              :. :. :. :. :. :. :. :.
+              :P :P :P :P :. :P :P :P
+              :R :N :B :Q :K :B :N :R]
             :result :invalid-move}))))
 
 (deftest function-nil-move3
@@ -747,14 +749,14 @@
     (is (= (play-game {:board (initial-board) :f1 (fn [_] ["e2" "e4"]) :f2 invalid-move-f})
            {:score [1 0]
             :history [["e2" "e4"] nil]
-            :board [\r \n \b \q \k \b \n \r
-              \p \p \p \p \p \p \p \p
-              \- \- \- \- \- \- \- \-
-              \- \- \- \- \- \- \- \-
-              \- \- \- \- \P \- \- \-
-              \- \- \- \- \- \- \- \-
-              \P \P \P \P \- \P \P \P
-              \R \N \B \Q \K \B \N \R]
+            :board [:r :n :b :q :k :b :n :r
+              :p :p :p :p :p :p :p :p
+              :. :. :. :. :. :. :. :.
+              :. :. :. :. :. :. :. :.
+              :. :. :. :. :P :. :. :.
+              :. :. :. :. :. :. :. :.
+              :P :P :P :P :. :P :P :P
+              :R :N :B :Q :K :B :N :R]
             :result :invalid-move}))))
 
 (deftest keyword_move
@@ -762,14 +764,14 @@
     (is (= (play-game {:board (initial-board) :f1 (fn [_] [:e2 :e4]) :f2 invalid-move-f})
            {:score [1 0]
             :history [["e2" "e4"] nil]
-            :board [\r \n \b \q \k \b \n \r
-              \p \p \p \p \p \p \p \p
-              \- \- \- \- \- \- \- \-
-              \- \- \- \- \- \- \- \-
-              \- \- \- \- \P \- \- \-
-              \- \- \- \- \- \- \- \-
-              \P \P \P \P \- \P \P \P
-              \R \N \B \Q \K \B \N \R]
+            :board [:r :n :b :q :k :b :n :r
+              :p :p :p :p :p :p :p :p
+              :. :. :. :. :. :. :. :.
+              :. :. :. :. :. :. :. :.
+              :. :. :. :. :P :. :. :.
+              :. :. :. :. :. :. :. :.
+              :P :P :P :P :. :P :P :P
+              :R :N :B :Q :K :B :N :R]
             :result :invalid-move}))))
 
 (deftest keyword_move_bad_format
@@ -777,14 +779,14 @@
     (is (= (play-game {:board (initial-board) :f1 (sb '(fn [_] [:e9 :e4])) :f2 invalid-move-f})
            {:score [0 1]
             :history [["e9" "e4"]]
-            :board [\r \n \b \q \k \b \n \r
-             \p \p \p \p \p \p \p \p
-             \- \- \- \- \- \- \- \-
-             \- \- \- \- \- \- \- \-
-             \- \- \- \- \- \- \- \-
-             \- \- \- \- \- \- \- \-
-             \P \P \P \P \P \P \P \P
-             \R \N \B \Q \K \B \N \R]
+            :board [:r :n :b :q :k :b :n :r
+             :p :p :p :p :p :p :p :p
+             :. :. :. :. :. :. :. :.
+             :. :. :. :. :. :. :. :.
+             :. :. :. :. :. :. :. :.
+             :. :. :. :. :. :. :. :.
+             :P :P :P :P :P :P :P :P
+             :R :N :B :Q :K :B :N :R]
             :result :invalid-move}))))
 
 (deftest keyword_move_bad_format
@@ -792,14 +794,14 @@
     (is (= (play-game {:board (initial-board) :f1 (fn [_] [:w7]) :f2 invalid-move-f})
            {:score [0 1]
             :history [[:w7]]
-            :board [\r \n \b \q \k \b \n \r
-             \p \p \p \p \p \p \p \p
-             \- \- \- \- \- \- \- \-
-             \- \- \- \- \- \- \- \-
-             \- \- \- \- \- \- \- \-
-             \- \- \- \- \- \- \- \-
-             \P \P \P \P \P \P \P \P
-             \R \N \B \Q \K \B \N \R]
+            :board [:r :n :b :q :k :b :n :r
+             :p :p :p :p :p :p :p :p
+             :. :. :. :. :. :. :. :.
+             :. :. :. :. :. :. :. :.
+             :. :. :. :. :. :. :. :.
+             :. :. :. :. :. :. :. :.
+             :P :P :P :P :P :P :P :P
+             :R :N :B :Q :K :B :N :R]
             :result :invalid-move}))))
 
 (deftest en-passant-case-game3
@@ -807,58 +809,68 @@
     (is (= (play-game {:board (initial-board) :f1 (fn [_] [:w7]) :f2 invalid-move-f})
            {:score [0 1]
             :history [[:w7]]
-            :board [\r \n \b \q \k \b \n \r
-             \p \p \p \p \p \p \p \p
-             \- \- \- \- \- \- \- \-
-             \- \- \- \- \- \- \- \-
-             \- \- \- \- \- \- \- \-
-             \- \- \- \- \- \- \- \-
-             \P \P \P \P \P \P \P \P
-             \R \N \B \Q \K \B \N \R]
+            :board [:r :n :b :q :k :b :n :r
+             :p :p :p :p :p :p :p :p
+             :. :. :. :. :. :. :. :.
+             :. :. :. :. :. :. :. :.
+             :. :. :. :. :. :. :. :.
+             :. :. :. :. :. :. :. :.
+             :P :P :P :P :P :P :P :P
+             :R :N :B :Q :K :B :N :R]
             :result :invalid-move}))))
 
+;; (require '[clojure.data :refer [diff]])
+;; (= (play-scenario  [[:a2 :a3] [:f7 :f5] [:c2 :c4] [:e7 :e5] [:d1 :a4] [:d8 :f6] [:d2 :d3] [:f6 :h4] [:g2 :g4] [:b8 :c6] [:b2 :b4] [:g7 :g6] [:c1 :h6] [:f8 :h6] [:e2 :e3] [:h4 :h3] [:g4 :f5] [:h6 :g5] [:g1 :f3] [:g8 :e7] [:e1 :d2] [:h3 :h5] [:a4 :c2] [:e7 :d5] [:c4 :d5] [:g5 :f6] [:c2 :a4] [:e5 :e4] [:f3 :g5] [:f6 :b2] [:a4 :a5] [:b2 :c1] [:d2 :c1] [:h5 :e2] [:a5 :c7] [:e2 :g4] [:c7 :c6] [:g4 :h4] [:h1 :g1] [:h4 :f2] [:d3 :d4] [:f2 :g2] [:b4 :b5] [:b7 :c6] [:g5 :h7] [:e8 :e7] [:a3 :a4] [:g2 :g4] [:b1 :d2] [:c8 :a6] [:h2 :h4] [:a6 :b7] [:g1 :g4] [:e7 :d6] [:g4 :g2] [:a8 :d8] [:f1 :e2] [:c6 :d5] nil])
+;;                    {:score [0 1], :history [["a2" "a3"] ["f7" "f5"] ["c2" "c4"] ["e7" "e5"] ["d1" "a4"] ["d8" "f6"] ["d2" "d3"] ["f6" "h4"] ["g2" "g4"] ["b8" "c6"] ["b2" "b4"] ["g7" "g6"] ["c1" "h6"] ["f8" "h6"] ["e2" "e3"] ["h4" "h3"] ["g4" "f5"] ["h6" "g5"] ["g1" "f3"] ["g8" "e7"] ["e1" "d2"] ["h3" "h5"] ["a4" "c2"] ["e7" "d5"] ["c4" "d5"] ["g5" "f6"] ["c2" "a4"] ["e5" "e4"] ["f3" "g5"] ["f6" "b2"] ["a4" "a5"] ["b2" "c1"] ["d2" "c1"] ["h5" "e2"] ["a5" "c7"] ["e2" "g4"] ["c7" "c6"] ["g4" "h4"] ["h1" "g1"] ["h4" "f2"] ["d3" "d4"] ["f2" "g2"] ["b4" "b5"] ["b7" "c6"] ["g5" "h7"] ["e8" "e7"] ["a3" "a4"] ["g2" "g4"] ["b1" "d2"] ["c8" "a6"] ["h2" "h4"] ["a6" "b7"] ["g1" "g4"] ["e7" "d6"] ["g4" "g2"] ["a8" "d8"] ["f1" "e2"] ["c6" "d5"] nil],
+;;           :board
+;;           [:. :. :. :r :. :. :. :r
+;;            :p :b :. :p :. :. :. :N
+;;            :. :. :. :k :. :. :p :.
+;;            :. :P :. :p :. :P :. :.
+;;            :P :. :. :P :p :. :. :P
+;;            :. :. :. :. :P :. :. :.
+;;            :. :. :. :N :B :. :R :.
+;;            :R :. :K :. :. :. :. :.], :result :invalid-move})
 
 (deftest dont-kill-the-king
   (testing ""
     (is (=
-         (play-scenario  [[:a2 :a3] [:f7 :f5] [:c2 :c4] [:e7 :e5] [:d1 :a4] [:d8 :f6] [:d2 :d3] [:f6 :h4] [:g2 :g4] [:b8 :c6] [:b2 :b4] [:g7 :g6] [:c1 :h6] [:f8 :h6] [:e2 :e3] [:h4 :h3] [:g4 :f5] [:h6 :g5] [:g1 :f3] [:g8 :e7] [:e1 :d2] [:h3 :h5] [:a4 :c2] [:e7 :d5] [:c4 :d5] [:g5 :f6] [:c2 :a4] [:e5 :e4] [:f3 :g5] [:f6 :b2] [:a4 :a5] [:b2 :c1] [:d2 :c1] [:h5 :e2] [:a5 :c7] [:e2 :g4] [:c7 :c6] [:g4 :h4] [:h1 :g1] [:h4 :f2] [:d3 :d4] [:f2 :g2] [:b4 :b5] [:b7 :c6] [:g5 :h7] [:e8 :e7] [:a3 :a4] [:g2 :g4] [:b1 :d2] [:c8 :a6] [:h2 :h4] [:a6 :b7] [:g1 :g4] [:e7 :d6] [:g4 :g2] [:a8 :d8] [:f1 :e2] [:c6 :d5]
-                          nil])
+         (play-scenario  [[:a2 :a3] [:f7 :f5] [:c2 :c4] [:e7 :e5] [:d1 :a4] [:d8 :f6] [:d2 :d3] [:f6 :h4] [:g2 :g4] [:b8 :c6] [:b2 :b4] [:g7 :g6] [:c1 :h6] [:f8 :h6] [:e2 :e3] [:h4 :h3] [:g4 :f5] [:h6 :g5] [:g1 :f3] [:g8 :e7] [:e1 :d2] [:h3 :h5] [:a4 :c2] [:e7 :d5] [:c4 :d5] [:g5 :f6] [:c2 :a4] [:e5 :e4] [:f3 :g5] [:f6 :b2] [:a4 :a5] [:b2 :c1] [:d2 :c1] [:h5 :e2] [:a5 :c7] [:e2 :g4] [:c7 :c6] [:g4 :h4] [:h1 :g1] [:h4 :f2] [:d3 :d4] [:f2 :g2] [:b4 :b5] [:b7 :c6] [:g5 :h7] [:e8 :e7] [:a3 :a4] [:g2 :g4] [:b1 :d2] [:c8 :a6] [:h2 :h4] [:a6 :b7] [:g1 :g4] [:e7 :d6] [:g4 :g2] [:a8 :d8] [:f1 :e2] [:c6 :d5] nil])
          {:score [0 1], :history [["a2" "a3"] ["f7" "f5"] ["c2" "c4"] ["e7" "e5"] ["d1" "a4"] ["d8" "f6"] ["d2" "d3"] ["f6" "h4"] ["g2" "g4"] ["b8" "c6"] ["b2" "b4"] ["g7" "g6"] ["c1" "h6"] ["f8" "h6"] ["e2" "e3"] ["h4" "h3"] ["g4" "f5"] ["h6" "g5"] ["g1" "f3"] ["g8" "e7"] ["e1" "d2"] ["h3" "h5"] ["a4" "c2"] ["e7" "d5"] ["c4" "d5"] ["g5" "f6"] ["c2" "a4"] ["e5" "e4"] ["f3" "g5"] ["f6" "b2"] ["a4" "a5"] ["b2" "c1"] ["d2" "c1"] ["h5" "e2"] ["a5" "c7"] ["e2" "g4"] ["c7" "c6"] ["g4" "h4"] ["h1" "g1"] ["h4" "f2"] ["d3" "d4"] ["f2" "g2"] ["b4" "b5"] ["b7" "c6"] ["g5" "h7"] ["e8" "e7"] ["a3" "a4"] ["g2" "g4"] ["b1" "d2"] ["c8" "a6"] ["h2" "h4"] ["a6" "b7"] ["g1" "g4"] ["e7" "d6"] ["g4" "g2"] ["a8" "d8"] ["f1" "e2"] ["c6" "d5"] nil],
           :board
-          [\- \- \- \r \- \- \- \r
-           \p \b \- \p \- \- \- \N
-           \- \- \- \k \- \- \p \-
-           \- \P \- \p \- \P \- \-
-           \P \- \- \P \p \- \- \P
-           \- \- \- \- \P \- \- \-
-           \- \- \- \N \B \- \R \-
-           \R \- \K \- \- \- \- \-], :result :invalid-move}))))
-
+          [:. :. :. :r :. :. :. :r
+           :p :b :. :p :. :. :. :N
+           :. :. :. :k :. :. :p :.
+           :. :P :. :p :. :P :. :.
+           :P :. :. :P :p :. :. :P
+           :. :. :. :. :P :. :. :.
+           :. :. :. :N :B :. :R :.
+           :R :. :K :. :. :. :. :.], :result :invalid-move}))))
 
 (deftest dont-kill-the-king2
   (testing ""
-    (is (= (time (play-game-rec {:board [\- \- \- \r \- \- \- \r
-                                    \p \b \- \p \- \- \- \N
-                                    \- \- \p \k \- \- \p \-
-                                    \- \P \- \P \- \P \- \-
-                                    \P \- \- \P \p \- \- \P
-                                    \- \- \- \- \P \- \- \-
-                                    \- \- \- \N \B \- \R \-
-                                    \R \- \K \- \- \- \- \-] :f1 (fn [_] nil) :f2 (fn [_] [:c6 :d5]) :white-turn? black :move-history [ ["a2" "a3"] ["f7" "f5"] ["c2" "c4"] ["e7" "e5"] ["d1" "a4"] ["d8" "f6"] ["d2" "d3"] ["f6" "h4"] ["g2" "g4"] ["b8" "c6"] ["b2" "b4"] ["g7" "g6"] ["c1" "h6"] ["f8" "h6"] ["e2" "e3"] ["h4" "h3"] ["g4" "f5"] ["h6" "g5"] ["g1" "f3"] ["g8" "e7"] ["e1" "d2"] ["h3" "h5"] ["a4" "c2"] ["e7" "d5"] ["c4" "d5"] ["g5" "f6"] ["c2" "a4"] ["e5" "e4"] ["f3" "g5"] ["f6" "b2"] ["a4" "a5"] ["b2" "c1"] ["d2" "c1"] ["h5" "e2"] ["a5" "c7"] ["e2" "g4"] ["c7" "c6"] ["g4" "h4"] ["h1" "g1"] ["h4" "f2"] ["d3" "d4"] ["f2" "g2"] ["b4" "b5"] ["b7" "c6"] ["g5" "h7"] ["e8" "e7"] ["a3" "a4"] ["g2" "g4"] ["b1" "d2"] ["c8" "a6"] ["h2" "h4"] ["a6" "b7"] ["g1" "g4"] ["e7" "d6"] ["g4" "g2"] ["a8" "d8"] ["f1" "e2"] ]}))
+    (is (= (time (play-game-rec {:board [:. :. :. :r :. :. :. :r
+                                    :p :b :. :p :. :. :. :N
+                                    :. :. :p :k :. :. :p :.
+                                    :. :P :. :P :. :P :. :.
+                                    :P :. :. :P :p :. :. :P
+                                    :. :. :. :. :P :. :. :.
+                                    :. :. :. :N :B :. :R :.
+                                    :R :. :K :. :. :. :. :.] :f1 (fn [_] nil) :f2 (fn [_] [:c6 :d5]) :is-player1-turn black :history [ ["a2" "a3"] ["f7" "f5"] ["c2" "c4"] ["e7" "e5"] ["d1" "a4"] ["d8" "f6"] ["d2" "d3"] ["f6" "h4"] ["g2" "g4"] ["b8" "c6"] ["b2" "b4"] ["g7" "g6"] ["c1" "h6"] ["f8" "h6"] ["e2" "e3"] ["h4" "h3"] ["g4" "f5"] ["h6" "g5"] ["g1" "f3"] ["g8" "e7"] ["e1" "d2"] ["h3" "h5"] ["a4" "c2"] ["e7" "d5"] ["c4" "d5"] ["g5" "f6"] ["c2" "a4"] ["e5" "e4"] ["f3" "g5"] ["f6" "b2"] ["a4" "a5"] ["b2" "c1"] ["d2" "c1"] ["h5" "e2"] ["a5" "c7"] ["e2" "g4"] ["c7" "c6"] ["g4" "h4"] ["h1" "g1"] ["h4" "f2"] ["d3" "d4"] ["f2" "g2"] ["b4" "b5"] ["b7" "c6"] ["g5" "h7"] ["e8" "e7"] ["a3" "a4"] ["g2" "g4"] ["b1" "d2"] ["c8" "a6"] ["h2" "h4"] ["a6" "b7"] ["g1" "g4"] ["e7" "d6"] ["g4" "g2"] ["a8" "d8"] ["f1" "e2"] ]}))
            {:score [0 1], :history [["a2" "a3"] ["f7" "f5"] ["c2" "c4"] ["e7" "e5"] ["d1" "a4"] ["d8" "f6"] ["d2" "d3"] ["f6" "h4"] ["g2" "g4"] ["b8" "c6"] ["b2" "b4"] ["g7" "g6"] ["c1" "h6"] ["f8" "h6"] ["e2" "e3"] ["h4" "h3"] ["g4" "f5"] ["h6" "g5"] ["g1" "f3"] ["g8" "e7"] ["e1" "d2"] ["h3" "h5"] ["a4" "c2"] ["e7" "d5"] ["c4" "d5"] ["g5" "f6"] ["c2" "a4"] ["e5" "e4"] ["f3" "g5"] ["f6" "b2"] ["a4" "a5"] ["b2" "c1"] ["d2" "c1"] ["h5" "e2"] ["a5" "c7"] ["e2" "g4"] ["c7" "c6"] ["g4" "h4"] ["h1" "g1"] ["h4" "f2"] ["d3" "d4"] ["f2" "g2"] ["b4" "b5"] ["b7" "c6"] ["g5" "h7"] ["e8" "e7"] ["a3" "a4"] ["g2" "g4"] ["b1" "d2"] ["c8" "a6"] ["h2" "h4"] ["a6" "b7"] ["g1" "g4"] ["e7" "d6"] ["g4" "g2"] ["a8" "d8"] ["f1" "e2"] ["c6" "d5"] nil],
-            :board [\- \- \- \r \- \- \- \r
-                    \p \b \- \p \- \- \- \N
-                    \- \- \- \k \- \- \p \-
-                    \- \P \- \p \- \P \- \-
-                    \P \- \- \P \p \- \- \P
-                    \- \- \- \- \P \- \- \-
-                    \- \- \- \N \B \- \R \-
-                    \R \- \K \- \- \- \- \-],
+            :board [:. :. :. :r :. :. :. :r
+                    :p :b :. :p :. :. :. :N
+                    :. :. :. :k :. :. :p :.
+                    :. :P :. :p :. :P :. :.
+                    :P :. :. :P :p :. :. :P
+                    :. :. :. :. :P :. :. :.
+                    :. :. :. :N :B :. :R :.
+                    :R :. :K :. :. :. :. :.],
             :result :invalid-move}))))
 
 
 (def f1-form-test
-  '(fn [{board :board am-i-white? :white-turn? ic :in-check? h :history s :state}]
+  '(fn [{board :board am-i-white? :is-player1-turn ic :in-check? h :history s :state}]
      (let [move-seq (if (nil? s)
                       (list ["e2" "e4"] ["d1" "h5"] ["f1" "c4"] ["h5" "f7"])
                       s)]
@@ -866,7 +878,7 @@
 )
 
 (def f2-form-test
-  '(fn [{board :board am-i-white? :white-turn? ic :in-check? h :history option-state :state}]
+  '(fn [{board :board am-i-white? :is-player1-turn ic :in-check? h :history option-state :state}]
      (let [b board
            move-seq (if (nil? option-state)
                       (list ["e7" "e5"] ["d7" "d6"] ["b8" "c6"] ["e8" "e7"])
@@ -882,28 +894,28 @@
                                     ["d1" "h5"] ["d7" "d6"]
                                     ["f1" "c4"] ["b8" "c6"]
                                     ["h5" "f7"]],
-            :board [\r \- \b \q \k \b \n \r
-                    \p \p \p \- \- \Q \p \p
-                    \- \- \n \p \- \- \- \-
-                    \- \- \- \- \p \- \- \-
-                    \- \- \B \- \P \- \- \-
-                    \- \- \- \- \- \- \- \-
-                    \P \P \P \P \- \P \P \P
-                    \R \N \B \- \K \- \N \R], :result :check-mate}))))
+            :board [:r :. :b :q :k :b :n :r
+                    :p :p :p :. :. :Q :p :p
+                    :. :. :n :p :. :. :. :.
+                    :. :. :. :. :p :. :. :.
+                    :. :. :B :. :P :. :. :.
+                    :. :. :. :. :. :. :. :.
+                    :P :P :P :P :. :P :P :P
+                    :R :N :B :. :K :. :N :R], :result :check-mate}))))
 
 (deftest security-infinite-loop
   (testing ""
     (is (= (dissoc (play-game {:board (initial-board) :f1 (sb '(fn [_] (loop [] (recur))) 5000) :f2 invalid-move-f}) :stacktrace)
            {:score [0 1]
             :history [:exception]
-            :board [\r \n \b \q \k \b \n \r
-             \p \p \p \p \p \p \p \p
-             \- \- \- \- \- \- \- \-
-             \- \- \- \- \- \- \- \-
-             \- \- \- \- \- \- \- \-
-             \- \- \- \- \- \- \- \-
-             \P \P \P \P \P \P \P \P
-             \R \N \B \Q \K \B \N \R]
+            :board [:r :n :b :q :k :b :n :r
+             :p :p :p :p :p :p :p :p
+             :. :. :. :. :. :. :. :.
+             :. :. :. :. :. :. :. :.
+             :. :. :. :. :. :. :. :.
+             :. :. :. :. :. :. :. :.
+             :P :P :P :P :P :P :P :P
+             :R :N :B :Q :K :B :N :R]
             :exception "java.util.concurrent.TimeoutException: Execution timed out."
             :result :too-slow-to-move}))))
 
@@ -912,14 +924,14 @@
     (is (= (dissoc (play-game {:board (initial-board) :f1 (sb '(fn [_] (Thread.))) :f2 invalid-move-f}) :stacktrace)
            {:score [0 1]
             :history [:exception]
-            :board [\r \n \b \q \k \b \n \r
-             \p \p \p \p \p \p \p \p
-             \- \- \- \- \- \- \- \-
-             \- \- \- \- \- \- \- \-
-             \- \- \- \- \- \- \- \-
-             \- \- \- \- \- \- \- \-
-             \P \P \P \P \P \P \P \P
-             \R \N \B \Q \K \B \N \R]
+            :board [:r :n :b :q :k :b :n :r
+             :p :p :p :p :p :p :p :p
+             :. :. :. :. :. :. :. :.
+             :. :. :. :. :. :. :. :.
+             :. :. :. :. :. :. :. :.
+             :. :. :. :. :. :. :. :.
+             :P :P :P :P :P :P :P :P
+             :R :N :B :Q :K :B :N :R]
             :exception "java.lang.SecurityException: You tripped the alarm! class java.lang.Thread is bad!"
             :result :security-exception}))))
 
@@ -928,14 +940,14 @@
     (is (= (dissoc (play-game {:board (initial-board) :f1 (sb '(fn [_ _] [:e5 :e6])) :f2 invalid-move-f}) :stacktrace :exception)
            {:score [0 1]
             :history [:exception]
-            :board [\r \n \b \q \k \b \n \r
-             \p \p \p \p \p \p \p \p
-             \- \- \- \- \- \- \- \-
-             \- \- \- \- \- \- \- \-
-             \- \- \- \- \- \- \- \-
-             \- \- \- \- \- \- \- \-
-             \P \P \P \P \P \P \P \P
-             \R \N \B \Q \K \B \N \R]
+            :board [:r :n :b :q :k :b :n :r
+             :p :p :p :p :p :p :p :p
+             :. :. :. :. :. :. :. :.
+             :. :. :. :. :. :. :. :.
+             :. :. :. :. :. :. :. :.
+             :. :. :. :. :. :. :. :.
+             :P :P :P :P :P :P :P :P
+             :R :N :B :Q :K :B :N :R]
             :result :caught-exception}))))
 
 (deftest not-compiling-function
@@ -943,14 +955,14 @@
     (is (= (dissoc (play-game {:board (initial-board) :f1 (sb '((fn) [_] [:e5 :e6])) :f2 invalid-move-f :id1 "daredevil" :id2 "wonderboy"}) :stacktrace)
            {:score [0 1]
             :history [:exception]
-            :board [\r \n \b \q \k \b \n \r
-             \p \p \p \p \p \p \p \p
-             \- \- \- \- \- \- \- \-
-             \- \- \- \- \- \- \- \-
-             \- \- \- \- \- \- \- \-
-             \- \- \- \- \- \- \- \-
-             \P \P \P \P \P \P \P \P
-             \R \N \B \Q \K \B \N \R]
+            :board [:r :n :b :q :k :b :n :r
+             :p :p :p :p :p :p :p :p
+             :. :. :. :. :. :. :. :.
+             :. :. :. :. :. :. :. :.
+             :. :. :. :. :. :. :. :.
+             :. :. :. :. :. :. :. :.
+             :P :P :P :P :P :P :P :P
+             :R :N :B :Q :K :B :N :R]
             :exception "java.lang.IllegalArgumentException: Parameter declaration missing"
             :result :caught-exception}))))
 
@@ -959,85 +971,85 @@
   (testing ""
     (is (= (board-seq [["e2" "e4"] ["e7" "e5"] ["d1" "h5"] ["d7" "d6"] ["f1" "c4"] ["b8" "c6"] ["h5" "f7"] ["e8" "e7"]] )
            (vector
-            [\r \n \b \q \k \b \n \r
-              \p \p \p \p \p \p \p \p
-              \- \- \- \- \- \- \- \-
-              \- \- \- \- \- \- \- \-
-              \- \- \- \- \- \- \- \-
-              \- \- \- \- \- \- \- \-
-              \P \P \P \P \P \P \P \P
-              \R \N \B \Q \K \B \N \R]
+            [:r :n :b :q :k :b :n :r
+              :p :p :p :p :p :p :p :p
+              :. :. :. :. :. :. :. :.
+              :. :. :. :. :. :. :. :.
+              :. :. :. :. :. :. :. :.
+              :. :. :. :. :. :. :. :.
+              :P :P :P :P :P :P :P :P
+              :R :N :B :Q :K :B :N :R]
 
-            [\r \n \b \q \k \b \n \r
-             \p \p \p \p \p \p \p \p
-             \- \- \- \- \- \- \- \-
-             \- \- \- \- \- \- \- \-
-             \- \- \- \- \P \- \- \-
-             \- \- \- \- \- \- \- \-
-             \P \P \P \P \- \P \P \P
-             \R \N \B \Q \K \B \N \R]
+            [:r :n :b :q :k :b :n :r
+             :p :p :p :p :p :p :p :p
+             :. :. :. :. :. :. :. :.
+             :. :. :. :. :. :. :. :.
+             :. :. :. :. :P :. :. :.
+             :. :. :. :. :. :. :. :.
+             :P :P :P :P :. :P :P :P
+             :R :N :B :Q :K :B :N :R]
 
-            [\r \n \b \q \k \b \n \r
-             \p \p \p \p \- \p \p \p
-             \- \- \- \- \- \- \- \-
-             \- \- \- \- \p \- \- \-
-             \- \- \- \- \P \- \- \-
-             \- \- \- \- \- \- \- \-
-             \P \P \P \P \- \P \P \P
-             \R \N \B \Q \K \B \N \R]
+            [:r :n :b :q :k :b :n :r
+             :p :p :p :p :. :p :p :p
+             :. :. :. :. :. :. :. :.
+             :. :. :. :. :p :. :. :.
+             :. :. :. :. :P :. :. :.
+             :. :. :. :. :. :. :. :.
+             :P :P :P :P :. :P :P :P
+             :R :N :B :Q :K :B :N :R]
 
-            [\r \n \b \q \k \b \n \r
-             \p \p \p \p \- \p \p \p
-             \- \- \- \- \- \- \- \-
-             \- \- \- \- \p \- \- \Q
-             \- \- \- \- \P \- \- \-
-             \- \- \- \- \- \- \- \-
-             \P \P \P \P \- \P \P \P
-             \R \N \B \- \K \B \N \R]
+            [:r :n :b :q :k :b :n :r
+             :p :p :p :p :. :p :p :p
+             :. :. :. :. :. :. :. :.
+             :. :. :. :. :p :. :. :Q
+             :. :. :. :. :P :. :. :.
+             :. :. :. :. :. :. :. :.
+             :P :P :P :P :. :P :P :P
+             :R :N :B :. :K :B :N :R]
 
-            [\r \n \b \q \k \b \n \r
-             \p \p \p \- \- \p \p \p
-             \- \- \- \p \- \- \- \-
-             \- \- \- \- \p \- \- \Q
-             \- \- \- \- \P \- \- \-
-             \- \- \- \- \- \- \- \-
-             \P \P \P \P \- \P \P \P
-             \R \N \B \- \K \B \N \R]
+            [:r :n :b :q :k :b :n :r
+             :p :p :p :. :. :p :p :p
+             :. :. :. :p :. :. :. :.
+             :. :. :. :. :p :. :. :Q
+             :. :. :. :. :P :. :. :.
+             :. :. :. :. :. :. :. :.
+             :P :P :P :P :. :P :P :P
+             :R :N :B :. :K :B :N :R]
 
-            [\r \n \b \q \k \b \n \r
-             \p \p \p \- \- \p \p \p
-             \- \- \- \p \- \- \- \-
-             \- \- \- \- \p \- \- \Q
-             \- \- \B \- \P \- \- \-
-             \- \- \- \- \- \- \- \-
-             \P \P \P \P \- \P \P \P
-             \R \N \B \- \K \- \N \R]
+            [:r :n :b :q :k :b :n :r
+             :p :p :p :. :. :p :p :p
+             :. :. :. :p :. :. :. :.
+             :. :. :. :. :p :. :. :Q
+             :. :. :B :. :P :. :. :.
+             :. :. :. :. :. :. :. :.
+             :P :P :P :P :. :P :P :P
+             :R :N :B :. :K :. :N :R]
 
-            [\r \- \b \q \k \b \n \r
-             \p \p \p \- \- \p \p \p
-             \- \- \n \p \- \- \- \-
-             \- \- \- \- \p \- \- \Q
-             \- \- \B \- \P \- \- \-
-             \- \- \- \- \- \- \- \-
-             \P \P \P \P \- \P \P \P
-             \R \N \B \- \K \- \N \R]
+            [:r :. :b :q :k :b :n :r
+             :p :p :p :. :. :p :p :p
+             :. :. :n :p :. :. :. :.
+             :. :. :. :. :p :. :. :Q
+             :. :. :B :. :P :. :. :.
+             :. :. :. :. :. :. :. :.
+             :P :P :P :P :. :P :P :P
+             :R :N :B :. :K :. :N :R]
 
-            [\r \- \b \q \k \b \n \r
-             \p \p \p \- \- \Q \p \p
-             \- \- \n \p \- \- \- \-
-             \- \- \- \- \p \- \- \-
-             \- \- \B \- \P \- \- \-
-             \- \- \- \- \- \- \- \-
-             \P \P \P \P \- \P \P \P
-             \R \N \B \- \K \- \N \R]
+            [:r :. :b :q :k :b :n :r
+             :p :p :p :. :. :Q :p :p
+             :. :. :n :p :. :. :. :.
+             :. :. :. :. :p :. :. :.
+             :. :. :B :. :P :. :. :.
+             :. :. :. :. :. :. :. :.
+             :P :P :P :P :. :P :P :P
+             :R :N :B :. :K :. :N :R]
 
             ;; this move is not valid but because it's a replay it does not matter, chess engine rules are not enforced
-            [\r \- \b \q \- \b \n \r
-             \p \p \p \- \k \Q \p \p
-             \- \- \n \p \- \- \- \-
-             \- \- \- \- \p \- \- \-
-             \- \- \B \- \P \- \- \-
-             \- \- \- \- \- \- \- \-
-             \P \P \P \P \- \P \P \P
-             \R \N \B \- \K \- \N \R])
+            [:r :. :b :q :. :b :n :r
+             :p :p :p :. :k :Q :p :p
+             :. :. :n :p :. :. :. :.
+             :. :. :. :. :p :. :. :.
+             :. :. :B :. :P :. :. :.
+             :. :. :. :. :. :. :. :.
+             :P :P :P :P :. :P :P :P
+             :R :N :B :. :K :. :N :R])
            ))))
