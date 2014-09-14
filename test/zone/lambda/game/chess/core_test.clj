@@ -70,6 +70,7 @@
    :R :N :B :. :K :. :N :R])
 
 (deftest test-filing
+
   (testing ""
     (is (= (file-component \b)
            1))))
