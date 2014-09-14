@@ -1,8 +1,10 @@
 (ns zone.lambda.game.chess.core
   (:use [clojail.core :only [sandbox]]
         [clojail.testers :only [blacklist-symbols blacklist-objects secure-tester]])
-  (:require [net.matlux.utils :refer [unfold dbg]]
-            [zone.lambda.game.board :as board :refer [pos-between pos-between-xy BLANK]]
+  (:require [net.matlux.utils :refer [unfold dbg display-assert]]
+            [zone.lambda.game.board :as board :refer [pos-between pos-between-xy BLANK
+
+                                                      is-white? is-black?  file-component]]
             [zone.lambda.game.engine :as engine :refer [game-step-monad-wrap play-game-seq seq-result]]
             [clojure.core.async :refer [<! >! go]]
             )
@@ -11,23 +13,24 @@
 
 (def column-nb 8)
 (def raw-nb 8)
+(def c2dto1d (partial board/c2dto1d column-nb))
+(def c1dto2d (partial board/c1dto2d column-nb))
+(def lookup-xy (partial board/lookup-xy column-nb))
+(def lookup (partial board/lookup column-nb))
+(def rank2coord (partial board/rank2coord column-nb))
+(def pos2coord (partial board/pos2coord column-nb))
+(def coord2pos (partial board/coord2pos column-nb))
+(def collid? (partial board/collid? column-nb))
+(def collid-oposite? (partial board/collid-oposite? column-nb))
+(def collid-self? (partial board/collid-self? column-nb))
+(def nothing-between (partial board/nothing-between column-nb))
+(def index-xy (partial board/index-xy column-nb))
 
+(def pos-xy-within-board? (partial board/pos-xy-within-board? raw-nb column-nb))
+(def board2xy-map-piece (partial board/board2xy-map-piece raw-nb column-nb))
 (def display-board (partial board/display-board raw-nb column-nb))
 
 
-(defmacro display-assert [x & args] `(let [x# ~x] (if x# true (do (println '~x "is wrong because =" x# "and [" '~@args "] = [" ~@args "]") false))))
-
-(defmacro profile
-  "Evaluates exprs in a context in which *out* is bound to a fresh
-  StringWriter.  Returns the assoced map with :time -> created by any nested printing
-  calls."
-  [& body]
-  `(let [s# (new java.io.StringWriter)
-         oldout# *out*
-         res# (binding [*out* s#]
-                (time (binding [*out* oldout#] ~@body)))]
-     (println "" '~@body "=" (str s#))
-     res#))
 
 
 (defn initial-board []
@@ -103,8 +106,6 @@
 
 
 
-(def ^:dynamic *file-key* \a)
-(def ^:dynamic *rank-key* \0)
 
 (def white-turn true)
 (def black-turn false)
@@ -114,65 +115,6 @@
 (def last-move-was-valid false)
 (def check-mate true)
 
-
-(defn file-component [file]
-  ;{:post [(and (< % 8) (>= % 0))]}
-  (- (int file) (int *file-key*)))
-
-;;(file-component :a)
-
-(defn rank-component [rank]
-  ;;{:post [(display-assert (and (< % (* raw-nb column-nb)) (>= % 0)) (int (.charAt (name rank) 0)))]}
-  (->> (int *rank-key*)
-       (- (int rank))
-       (- 8)
-       (* 8)))
-
-;;(and (< % (* raw-nb column-nb)) (>= % 0))
-(rank-component \0)
-(defn- file2coord [file]
-  ;{:post [(and (< % 8) (>= % 0))]}
-  (file-component file))
-
-;(file-coord :a)
-
-(defn- rank2coord [rank]
-  ;{:post [(and (< % 8) (>= % 0))]}
-  (->> (int *rank-key*)
-       (- (int rank))
-       (- 8)))
-
-;(rank-coord :1)
-
-(defn- coord2file [x]
-  {:pre [(and (< x 8) (>= x 0))]}
-  (->> (int *file-key*)
-       (+ x)
-       char))
-
-(defn- coord2rank [y]
-  {:pre [(and (< y 8) (>= y 0))]}
-  (->> (- (int *rank-key*) y)
-       (+ 8)
-       char))
-
-;(coord2rank 5)
-
-;(rank-coord :1)
-(defn pos2coord [^String pos]
-  {:pre [(display-assert (and (string? pos) (= (count pos) 2)) pos)]}
-  (let [[file rank] pos
-        x (file2coord file)
-        y (rank2coord rank)]
-    [x y]))
-
-
-(defn coord2pos [[x y]]
-  {:pre [(display-assert (and (number? x)(number? y)))]}
-  (let [
-        file (coord2file x)
-        rank (coord2rank y)]
-    (str file rank)))
 
 (defn movemap2move [[from {to :move-to}]]
   [from to])
@@ -189,40 +131,10 @@
 
 ;;(move2move-xy ["e5" "e6"])
 
-(defn- index [file rank]
-  ;;{:pre [(and (char? (.charAt (name file) 0)) (char? (.charAt (name rank) 0)))]}
-  (+ (file-component file) (rank-component rank)))
 
-(defn- index-xy [x y]
-  (+ x (* y 8)))
-
-;;(index :a :1)
-
-;;(index-xy 7 7)
-
-(defn lookup [^PersistentVector board ^String pos]
-  {:pre [(string? pos)]}
-  (let [[file rank] pos]
-    (board (index file rank))))
-(defn lookup-xy [^PersistentVector board ^PersistentVector pos]
-  {:pre [(display-assert (and (vector? pos) (number? (first pos))) pos)]}
-  (lookup board (coord2pos pos)))
-
-;; (file-component :b)
-;;(rank-component :1)
-;; (lookup (initial-board) "e5")
-;;=> :R
-;;(lookup-xy (initial-board) [0 7])
 
 ;; ------------- all possible moves
 
-(defn is-white? [piece]
-  {:pre [(display-assert (char? (.charAt (name piece) 0)) piece)]}
-  (Character/isUpperCase (.charAt (name piece) 0)))
-(defn is-black? [piece]
-  (Character/isLowerCase (.charAt (name piece) 0)))
-(defn is-piece? [piece]
-  (Character/isLetter (.charAt (name piece) 0)))
 
 ;(.charAt (name :f) 0)
 (defn- is-knight? [ piece]
@@ -250,92 +162,6 @@
   (getMoves [this]))
 
 ;;(pos2coord "e5")
-
-(defn- pos-xy-within-board? [[x y]]
-  (and (< x 8)
-       (>= x 0)
-       (< y 8)
-       (>= y 0)
-       ))
-
-;; (defn pos2coord [^String pos]
-;;   {:pre [(display-assert (and (string? pos) (= (count pos) 2)) pos)]}
-;;   )
-
-(defn- pos-within-board? [^String pos]
-  (pos-xy-within-board?
-   (let [[file rank] pos
-         x (file2coord file)
-         y (rank2coord rank)]
-     [x y])))
-
-;;(pos-within-board? "e8")
-;;(pos-within-board? "e9")
-;;(pos-within-board? "q8")
-
-(defn collid-self? [board is-player1-turn coord]
-  (if is-player1-turn
-    (is-white? (lookup board (coord2pos coord)))
-    (is-black? (lookup board (coord2pos coord)))))
-(defn collid-oposite? [board is-player1-turn coord]
-  (if is-player1-turn
-    (is-black? (lookup board (coord2pos coord)))
-    (is-white? (lookup board (coord2pos coord)))
-    ))
-
-(collid-oposite? (initial-board) true [2 7])
-
-(comment
-  (pos-between [0 0] [7 7])
-  (pos-between [0 0] [0 7])
-  (pos-between [2 2] [7 7])
-  (pos-between [0 0] [7 0])
-  (pos-between [7 7] [0 0])
-  (pos-between [0 7] [0 0])
-  (pos-between [7 0] [0 0])
-  (pos-between [7 7] [1 1])
-)
-
-
-
-(defn- nothing-between [board p1 p2]
-  (not-any? is-piece? (map #(lookup-xy board %) (pos-between p1 p2))))
-
-(comment
-  (nothing-between (initial-board) [0 0] [7 7])
-  (nothing-between (initial-board) [1 1] [6 6])
-  (nothing-between (initial-board) [2 0] [6 0])
-  (nothing-between (initial-board) [0 1] [0 6])
-  (nothing-between (initial-board) [0 0] [7 7])
-  (nothing-between (initial-board) [0 0] [7 7])
-  (nothing-between (initial-board) [0 0] [7 7])
-  (nothing-between (test-board2) [0 7] [1 7])
-)
-
-(defn collid? [board pos] (not (= (lookup-xy board pos) :.)))
-
-(defn c2dto1d [v]
-  (let [[x y] v]
-    (clojure.core/+ x (clojure.core/* 8 y))))
-
-(defn c1dto2d [i]
-  (vector (int (/ i 8)) (mod i 8)))
-
-(defn c1dto2d-xy [i]
-  (vector (mod i 8) (int (/ i 8))))
-
-(defn char2state [pieces-list]
-  (into {} (filter #(not= :. (second %)) (map #(vector (c1dto2d %1) %2 ) (range (* raw-nb column-nb)) pieces-list))))
-
-(defn board2xy-map-piece [pieces-list]
-  (into {} (filter #(not= :. (second %)) (map #(vector (c1dto2d-xy %1) %2 ) (range (* raw-nb column-nb)) pieces-list))))
-
-
-;; ((fn [pieces-list]
-;;    (into {} (filter #(not= :. (second %)) (map #(vector (c1dto2d %1) %2 ) (range (* raw-nb column-nb)) pieces-list)))) (initial-board))
-
-;;(collid? (initial-board) [1 6])
-
 
 ;;---- pawn moves
 

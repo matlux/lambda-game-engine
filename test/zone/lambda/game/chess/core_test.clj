@@ -1,6 +1,11 @@
 (ns zone.lambda.game.chess.core-test
   (:require [clojure.test :refer :all]
+            [zone.lambda.game.board :as board :refer [file-component is-white? is-black? is-piece?
+                                                      ]]
             [zone.lambda.game.chess.core :refer :all]))
+
+(def rank-component (partial board/rank-component column-nb))
+
 
 (def en-passant-check-board ;; it's white's turn
   [:r :. :b :q :k :b :n :r
