@@ -38,7 +38,7 @@
        (- column-nb)))
 
 (defn- coord2file [column-nb x]
-  {:pre [(and (< x column-nb) (>= x 0))]}
+  {:pre [(display-assert (and (< x column-nb) (>= x 0)) column-nb x)]}
   (->> (int *file-key*)
        (+ x)
        char))

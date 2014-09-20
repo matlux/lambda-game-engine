@@ -9,5 +9,6 @@
                  [org.clojure/tools.trace "0.7.5"]
                  [org.clojure/core.async "0.1.242.0-44b1e3-alpha"]
                  [clojail "1.0.6"]]
-  :main zone.lambda.game.connect4.core
+;;  :main zone.lambda.game.connect4.core
+  :main zone.lambda.game.main
   :jvm-opts ["-Djava.security.policy=java-security.policy"])

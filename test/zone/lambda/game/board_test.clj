@@ -140,6 +140,27 @@
            [false true false false false true false true true false false]
            ))))
 
+(def collid-self?-test (partial collid-self? column-nb (initial-board)))
+(collid-self?-test true [9 8])
+(coord2pos column-nb [9 8])
+
+(deftest test-collid-self
+  (testing ""
+    (is (= (map #(collid-self?-test true %) (for [x (range raw-nb)
+                                                  y (range (dec column-nb))]
+                                              [x y]))
+
+           (count '(false false false false false false true true false
+                   false false false false false true true false false
+                   false false false false true true false false false
+                   false false false true true false false false false
+                   false false true true false false false false false
+                   false true true false false false false false false
+                   true true false false false false false false true
+                   true false false false false false false false false))
+           ))))
+
+
 
 
 (comment
