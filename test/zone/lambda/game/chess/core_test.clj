@@ -216,6 +216,11 @@
     (is (= (collid? (initial-board) [2 1])
            true))))
 
+(deftest test-lookup-xy
+  (testing "return piece Character from an algebraic notation given a board state - White Rook"
+    (is (= (lookup-xy (initial-board) [0 7])
+           :R))))
+
 
 (deftest test-lookup
   (testing "return piece Character from an algebraic notation given a board state - White Rook"

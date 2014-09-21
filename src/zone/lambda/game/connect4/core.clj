@@ -8,10 +8,15 @@
 
 (def column-nb 7)
 (def raw-nb 6)
+
+;; partial application of board coordinates
 (def c2dto1d (partial board/c2dto1d column-nb))
 (def c1dto2d (partial board/c1dto2d column-nb))
 (def pos-between-1d (partial board/pos-between-1d column-nb))
-(def display-board (partial board/display-board raw-nb column-nb))
+
+;; need both column-nb and raw-nb
+(def display-board (partial board/display-board column-nb raw-nb))
+
 (def interactive-player (engine/interactive-player display-board))
 
 (def initial-board
@@ -28,6 +33,8 @@
    :. :. :. :. :. :o :x
    :. :x :o :x :o :o :o
    :. :x :x :o :x :x :x])
+
+(display-board test-board)
 
 (defn is-valid? [board] true)
 

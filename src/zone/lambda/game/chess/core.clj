@@ -13,22 +13,25 @@
 
 (def column-nb 8)
 (def raw-nb 8)
+
+;; partial application of board coordinates
 (def c2dto1d (partial board/c2dto1d column-nb))
 (def c1dto2d (partial board/c1dto2d column-nb))
-(def lookup-xy (partial board/lookup-xy column-nb))
-(def lookup (partial board/lookup column-nb))
 (def rank2coord (partial board/rank2coord column-nb))
 (def pos2coord (partial board/pos2coord column-nb))
-(def coord2pos (partial board/coord2pos column-nb))
-(def collid? (partial board/collid? column-nb))
-(def collid-oposite? (partial board/collid-oposite? column-nb))
-(def collid-self? (partial board/collid-self? column-nb))
-(def nothing-between (partial board/nothing-between column-nb))
 (def index-xy (partial board/index-xy column-nb))
 
-(def pos-xy-within-board? (partial board/pos-xy-within-board? raw-nb column-nb))
-(def board2xy-map-piece (partial board/board2xy-map-piece raw-nb column-nb))
-(def display-board (partial board/display-board raw-nb column-nb))
+;; need both column-nb and raw-nb
+(def coord2pos (partial board/coord2pos column-nb raw-nb))
+(def lookup-xy (partial board/lookup-xy column-nb raw-nb))
+(def lookup (partial board/lookup column-nb raw-nb))
+(def collid? (partial board/collid? column-nb raw-nb))
+(def collid-oposite? (partial board/collid-oposite? column-nb raw-nb))
+(def collid-self? (partial board/collid-self? column-nb raw-nb))
+(def nothing-between (partial board/nothing-between column-nb raw-nb))
+(def pos-xy-within-board? (partial board/pos-xy-within-board? column-nb raw-nb))
+(def board2xy-map-piece (partial board/board2xy-map-piece column-nb raw-nb))
+(def display-board (partial board/display-board column-nb raw-nb))
 
 
 

@@ -43,10 +43,10 @@
        (+ x)
        char))
 
-(defn- coord2rank [column-nb y]
-  {:pre [(and (< y column-nb) (>= y 0))]}
+(defn- coord2rank [raw-nb y]
+  {:pre [(and (< y raw-nb) (>= y 0))]}
   (->> (- (int *rank-key*) y)
-       (+ column-nb)
+       (+ raw-nb)
        char))
 
 (defn pos2coord [column-nb ^String pos]
@@ -57,11 +57,11 @@
     [x y]))
 
 
-(defn coord2pos [column-nb [x y]]
+(defn coord2pos [column-nb raw-nb [x y]]
   {:pre [(display-assert (and (number? x)(number? y)))]}
   (let [
         file (coord2file column-nb x)
-        rank (coord2rank column-nb y)]
+        rank (coord2rank raw-nb y)]
     (str file rank)))
 
 
@@ -107,18 +107,32 @@
 (defn is-piece? [piece]
   (Character/isLetter (.charAt (name piece) 0)))
 
-(defn lookup [column-nb ^PersistentVector board ^String pos]
+(defn lookup [column-nb raw-nb ^PersistentVector board ^String pos]
   {:pre [(string? pos)]}
   (let [[file rank] pos]
     (board (index column-nb file rank))))
-(defn lookup-xy [column-nb ^PersistentVector board ^PersistentVector pos]
+(defn lookup-xy [column-nb raw-nb ^PersistentVector board ^PersistentVector [x y :as pos]]
   {:pre [(display-assert (and (vector? pos) (number? (first pos))) pos)]}
-  (lookup column-nb board (coord2pos column-nb pos)))
+  ;;(lookup column-nb raw-nb board (coord2pos column-nb raw-nb pos))
+  (board (index-xy column-nb x y))
+  )
+;; (defn initial-board []
+;;   [:r :n :b :q :k :b :n :r :.
+;;    :p :p :p :p :p :p :p :p :.
+;;    :. :. :. :. :. :. :. :. :.
+;;    :. :. :. :. :. :. :. :. :.
+;;    :. :. :. :. :. :. :. :. :.
+;;    :. :. :. :. :. :. :. :. :.
+;;    :P :P :P :P :P :P :P :P :.
+;;    :R :N :B :Q :K :B :N :R :.
+;;    :. :. :. :. :. :. :. :. :.
+;;    :. :. :. :. :. :. :. :. :.])
+;;(lookup-xy 9 10 (initial-board) [0 0])
 
-(defn nothing-between [column-nb board p1 p2]
-  (not-any? is-piece? (map #(lookup-xy column-nb board %) (pos-between p1 p2))))
+(defn nothing-between [column-nb raw-nb board p1 p2]
+  (not-any? is-piece? (map #(lookup-xy column-nb raw-nb board %) (pos-between p1 p2))))
 
-(defn board2xy-map-piece [raw-nb column-nb pieces-list]
+(defn board2xy-map-piece [column-nb raw-nb pieces-list]
   (into {}
         (filter
          #(not= BLANK (second %))
@@ -127,7 +141,7 @@
           (range (* column-nb raw-nb))
           pieces-list))))
 
-(defn pos-xy-within-board? [raw-nb column-nb [x y]]
+(defn pos-xy-within-board? [column-nb raw-nb [x y]]
   (and (< x raw-nb)
        (>= x 0)
        (< y column-nb)
@@ -141,24 +155,24 @@
          y (rank2coord column-nb rank)]
      [x y])))
 
-(defn collid-self? [column-nb board is-player1-turn coord]
+(defn collid-self? [column-nb raw-nb board is-player1-turn coord]
   (if is-player1-turn
-    (is-white? (lookup column-nb board (coord2pos column-nb coord)))
-    (is-black? (lookup column-nb board (coord2pos column-nb coord)))))
-(defn collid-oposite? [column-nb board is-player1-turn coord]
+    (is-white? (lookup-xy column-nb raw-nb board coord))
+    (is-black? (lookup-xy column-nb raw-nb board coord))))
+(defn collid-oposite? [column-nb raw-nb board is-player1-turn coord]
   (if is-player1-turn
-    (is-black? (lookup column-nb board (coord2pos column-nb coord)))
-    (is-white? (lookup column-nb board (coord2pos column-nb coord)))
+    (is-black? (lookup column-nb raw-nb board (coord2pos column-nb raw-nb coord)))
+    (is-white? (lookup column-nb raw-nb board (coord2pos column-nb raw-nb coord)))
     ))
 
-(defn collid? [column-nb board pos] (not (= (lookup-xy column-nb board pos) :.)))
+(defn collid? [column-nb raw-nb board pos] (not (= (lookup-xy column-nb raw-nb board pos) :.)))
 
 (defn generate-line [n]
   (apply str "+" (repeat n "---+")))
 
 (generate-line 7)
 
-(defn render-board [raw-nb column-nb board-state]
+(defn render-board [column-nb raw-nb board-state]
   (let [line (generate-line column-nb)
         pieces-pos board-state ;(into {} board-state)
         ]
@@ -170,5 +184,5 @@
                            (format "| %s " c))) (range 1 (inc (* column-nb raw-nb)))))))
 
 
-(defn display-board [raw-nb column-nb board]
-  (println (render-board raw-nb column-nb (board2xy-map-piece raw-nb column-nb board))))
+(defn display-board [column-nb raw-nb board]
+  (println (render-board column-nb raw-nb (board2xy-map-piece column-nb raw-nb board))))

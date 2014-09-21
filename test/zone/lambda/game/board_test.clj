@@ -1,5 +1,5 @@
 (ns zone.lambda.game.board-test
-  (:require [zone.lambda.game.board :refer :all]
+  (:require [zone.lambda.game.board :as board :refer :all]
             [clojure.test :refer :all]))
 
 (def column-nb 9)
@@ -29,7 +29,7 @@
 ;;    :R :N :B :Q :K :B :N :R])
 
 
-(def nothing-between-test (partial nothing-between column-nb (initial-board)))
+(def nothing-between-test (partial nothing-between column-nb raw-nb (initial-board)))
 
 (deftest test-nothing-betwen
   (testing ""
@@ -122,7 +122,11 @@
             (rank-component 8 \9)]
            [64 56 48 40 32 -368 8 0 -8]))))
 
-(def collid?-test (partial collid? column-nb (initial-board)))
+(def collid?-test (partial collid? column-nb raw-nb (initial-board)))
+
+;;(lookup-xy column-nb raw-nb (initial-board) [0 0])
+;;(coord2pos column-nb raw-nb [0 0])
+;;(board/coord2rank raw-nb 0)
 
 (deftest test-collid
   (testing ""
@@ -140,26 +144,73 @@
            [false true false false false true false true true false false]
            ))))
 
-(def collid-self?-test (partial collid-self? column-nb (initial-board)))
-(collid-self?-test true [9 8])
-(coord2pos column-nb [9 8])
+(def collid-self?-test (partial collid-self? column-nb raw-nb (initial-board)))
+;;(collid-self?-test true [9 8])
+;;(coord2pos column-nb [9 8])
 
 (deftest test-collid-self
   (testing ""
-    (is (= (map #(collid-self?-test true %) (for [x (range raw-nb)
-                                                  y (range (dec column-nb))]
-                                              [x y]))
+    (is (= (map #(collid-self?-test true %) (for [y (range 0 raw-nb)
+                                                  x (range 0 column-nb)
+                                          ]
+                                      [x y]))
+           [false false false false false false false false false
+            false false false false false false false false false
+            false false false false false false false false false
+            false false false false false false false false false
+            false false false false false false false false false
+            false false false false false false false false false
+            true  true  true  true  true  true  true  true  false
+            true  true  true  true  true  true  true  true  false
+            false false false false false false false false false
+            false false false false false false false false false]
 
-           (count '(false false false false false false true true false
-                   false false false false false true true false false
-                   false false false false true true false false false
-                   false false false true true false false false false
-                   false false true true false false false false false
-                   false true true false false false false false false
-                   true true false false false false false false true
-                   true false false false false false false false false))
            ))))
 
+(deftest test-collid-self2
+  (testing ""
+    (is (= (map #(collid-self?-test false %) (for [y (range 0 raw-nb)
+                                                  x (range 0 column-nb)
+                                          ]
+                                      [x y]))
+           [true  true  true  true  true  true  true  true  false
+            true  true  true  true  true  true  true  true  false
+            false false false false false false false false false
+            false false false false false false false false false
+            false false false false false false false false false
+            false false false false false false false false false
+            false false false false false false false false false
+            false false false false false false false false false
+            false false false false false false false false false
+            false false false false false false false false false]
+
+           ))))
+
+
+(def lookup-xy-test (partial board/lookup-xy column-nb raw-nb (initial-board)))
+
+
+
+;;(lookup-xy-test [0 0])
+
+(deftest test-lookup-xy
+  (testing ""
+    (is (= (map #(lookup-xy-test %) (for [y (range 0 raw-nb)
+                                          x (range 0 column-nb)
+                                          ]
+                                      [x y]))
+           [:r :n :b :q :k :b :n :r :.
+            :p :p :p :p :p :p :p :p :.
+            :. :. :. :. :. :. :. :. :.
+            :. :. :. :. :. :. :. :. :.
+            :. :. :. :. :. :. :. :. :.
+            :. :. :. :. :. :. :. :. :.
+            :P :P :P :P :P :P :P :P :.
+            :R :N :B :Q :K :B :N :R :.
+            :. :. :. :. :. :. :. :. :.
+            :. :. :. :. :. :. :. :. :.]
+
+           ))))
 
 
 
