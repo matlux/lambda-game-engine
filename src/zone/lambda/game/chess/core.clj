@@ -658,7 +658,7 @@
                 new-history (conj history norm-move)]
             (if (not valid?)
               (vector true {:score (forfeit is-player1-turn) :history new-history :board board :result :invalid-move})
-             (let [
+              (let [
                    move-xy (move2move-xy  norm-move)
                    en-passant-move-xymap (move-en-passant board is-player1-turn false history move-xy)
                    real-move (if en-passant-move-xymap en-passant-move-xymap move-xy)]

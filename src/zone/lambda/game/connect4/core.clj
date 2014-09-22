@@ -27,19 +27,19 @@
    :. :. :. :. :. :. :.
    :. :. :. :. :. :. :.])
 (def test-board
-  [:. :. :. :. :. :. :.
-   :. :. :. :. :. :. :.
-   :. :. :. :. :. :. :o
+  [:. :. :. :. :. :. :o
    :. :. :. :. :. :o :x
+   :. :. :. :. :o :x :o
+   :. :. :. :. :x :o :x
    :. :x :o :x :o :o :o
    :. :x :x :o :x :x :x])
 
-(display-board test-board)
-
-(defn is-valid? [board] true)
 
 (defn get-column-1d [col]
-  (pos-between-1d [col 0] [col raw-nb]))
+  (pos-between-1d [col -1] [col raw-nb]))
+
+;;(get-column-1d 6)
+;;(pos-between [6 -1] [6 raw-nb])
 
 (defn stack-size [board col]
   (->>  (take-while #(not= (get board %) BLANK) (reverse (get-column-1d col))) count))
@@ -47,6 +47,11 @@
 (defn stack-top [board col]
   (- raw-nb (inc (stack-size board col))))
 
+(defn is-valid? [board move]
+  (and (< move column-nb) (>= move 0) (< (stack-size board move) raw-nb)))
+
+(is-valid? test-board 6)
+(stack-size test-board 6)
 
 
 (defn insert-token [board col token]
@@ -58,8 +63,10 @@
 
 ;;(count (take-while #(not= (get test-board %) BLANK) (reverse (get-column-1d 0))))
 ;;(stack-count test-board 2)
+;;(map #(get-column-1d %) (range column-nb))
 ;;(map #(stack-size test-board %) (range column-nb))
 ;;(map #(stack-top test-board %) (range column-nb))
+;;(map #(is-valid? test-board %) (range column-nb))
 
 (defn apply-move [board move is-player1-turn]
   (let [token (if is-player1-turn :x :o)
@@ -74,20 +81,24 @@
 (defn test-if-finished [board]
   false)
 
+(defn forfeit [is-player1-turn]
+  (if is-player1-turn [0 1] [1 0]))
 
 
 (defn play-game-step [{:keys [board player1 player2 state-p1 state-p2 is-player1-turn] :as state}]
-  (let [[step-player player-state] (if is-player1-turn [player1 state-p1] [player2 state-p2])
-        { move :move player-state :state} (step-player {:board board :is-player1-turn is-player1-turn :state player-state})
-        ]
-    (if (not (is-valid? board))
-      [false state]
-      (let [new-board (apply-move board move is-player1-turn)
-            finished? (test-if-finished new-board)] ;; finished is not a boolean
-        [finished? (merge {:board new-board :player1 player1 :player2 player2 :is-player1-turn (not is-player1-turn) }
-                          (if is-player1-turn
-                            {:state-p1 player-state :state-p2 state-p2}
-                            {:state-p1 state-p1 :state-p2 player-state}))]))))
+  (if (or (nil? player1) (nil? player1))
+    nil
+   (let [[step-player player-state] (if is-player1-turn [player1 state-p1] [player2 state-p2])
+         { move :move player-state :state} (step-player {:board board :is-player1-turn is-player1-turn :state player-state})
+         ]
+     (if (is-valid? board move)
+       (let [new-board (apply-move board move is-player1-turn)
+             finished? (test-if-finished new-board)] ;; finished is not a boolean
+         [finished? (merge {:board new-board :player1 player1 :player2 player2 :is-player1-turn (not is-player1-turn) }
+                           (if is-player1-turn
+                             {:state-p1 player-state :state-p2 state-p2}
+                             {:state-p1 state-p1 :state-p2 player-state}))])
+       [true {:score (forfeit is-player1-turn) :board board :result :invalid-move}]))))
 
 (def game-step (game-step-monad-wrap play-game-step))
 
@@ -98,7 +109,7 @@
 
 
 (defn -main []
- (seq-result (play-game-seq game-step  {:board initial-board :player1 interactive-player :player2 interactive-player})))
+ (println (seq-result (play-game-seq game-step  {:board initial-board :player1 interactive-player :player2 interactive-player}))))
 
 ;;(play initial-board p1 p2)
 
