@@ -13,6 +13,9 @@
   (let [[x y] v]
     (+ x (* column-nb y))))
 
+(defn index-xy [column-nb x y]
+  (+ x (* y column-nb)))
+
 (defn c1dto2d [column-nb i]
   (vector (mod i column-nb) (int (/ i column-nb))))
 
@@ -31,11 +34,15 @@
   ;{:post [(and (< % 8) (>= % 0))]}
   (file-component file))
 
-(defn rank2coord [column-nb rank]
-  ;{:post [(and (< % 8) (>= % 0))]}
+;; (->> (int *rank-key*)
+;;        (- (int \:))
+;;        (- 10))
+
+(defn rank2coord [raw-nb rank]
+  ;;{:post [(and (< % raw-nb) (>= % 0))]}
   (->> (int *rank-key*)
        (- (int rank))
-       (- column-nb)))
+       (- raw-nb)))
 
 (defn- coord2file [column-nb x]
   {:pre [(display-assert (and (< x column-nb) (>= x 0)) column-nb x)]}
@@ -69,8 +76,6 @@
   ;;{:pre [(and (char? (.charAt (name file) 0)) (char? (.charAt (name rank) 0)))]}
   (+ (file-component file) (rank-component column-nb rank)))
 
-(defn index-xy [column-nb x y]
-  (+ x (* y column-nb)))
 
 (defn- is-vertical? [[x1 y1] [x2 y2]]
   (zero? (- x1 x2)))
@@ -142,9 +147,9 @@
           pieces-list))))
 
 (defn pos-xy-within-board? [column-nb raw-nb [x y]]
-  (and (< x raw-nb)
+  (and (< x column-nb)
        (>= x 0)
-       (< y column-nb)
+       (< y raw-nb)
        (>= y 0)
        ))
 
@@ -161,8 +166,8 @@
     (is-black? (lookup-xy column-nb raw-nb board coord))))
 (defn collid-oposite? [column-nb raw-nb board is-player1-turn coord]
   (if is-player1-turn
-    (is-black? (lookup column-nb raw-nb board (coord2pos column-nb raw-nb coord)))
-    (is-white? (lookup column-nb raw-nb board (coord2pos column-nb raw-nb coord)))
+    (is-black? (lookup-xy column-nb raw-nb board coord))
+    (is-white? (lookup-xy column-nb raw-nb board coord))
     ))
 
 (defn collid? [column-nb raw-nb board pos] (not (= (lookup-xy column-nb raw-nb board pos) :.)))
@@ -170,7 +175,7 @@
 (defn generate-line [n]
   (apply str "+" (repeat n "---+")))
 
-(generate-line 7)
+;;(generate-line 7)
 
 (defn render-board [column-nb raw-nb board-state]
   (let [line (generate-line column-nb)

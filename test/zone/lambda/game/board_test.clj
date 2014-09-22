@@ -54,7 +54,7 @@
                  [[7 7] [0 0]]
                  [[0 0] [8 8]]
                  [[0 0] [8 0]]
-                 [[0 8] [8 8]]])
+                 [[0 8] [9 8]]])
            '(([1 1] [2 2] [3 3] [4 4] [5 5] [6 6])
              ([2 2] [3 3] [4 4] [5 5])
              ([3 0] [4 0] [5 0])
@@ -62,7 +62,7 @@
              ([1 1] [2 2] [3 3] [4 4] [5 5] [6 6])
              ([1 1] [2 2] [3 3] [4 4] [5 5] [6 6] [7 7])
              ([1 0] [2 0] [3 0] [4 0] [5 0] [6 0] [7 0])
-             ([1 8] [2 8] [3 8] [4 8] [5 8] [6 8] [7 8]))))))
+             ([1 8] [2 8] [3 8] [4 8] [5 8] [6 8] [7 8] [8 8]))))))
 
 (deftest test-1d-2d-conversion
   (testing ""
@@ -70,6 +70,11 @@
            (range 90)))))
 
 (deftest test-1d-2d-conversion2
+  (testing ""
+    (is (= (map #(index-xy column-nb (get % 0) (get % 1)) (map #(c1dto2d column-nb %) (range (* raw-nb column-nb))))
+           (range 90)))))
+
+(deftest test-1d-2d-conversion3
   (testing ""
     (is (= (map #(c1dto2d column-nb %) (range (* raw-nb column-nb)))
            '( [0 0] [1 0] [2 0] [3 0] [4 0] [5 0] [6 0] [7 0] [8 0]
@@ -83,16 +88,28 @@
               [0 8] [1 8] [2 8] [3 8] [4 8] [5 8] [6 8] [7 8] [8 8]
               [0 9] [1 9] [2 9] [3 9] [4 9] [5 9] [6 9] [7 9] [8 9])))))
 
+(deftest test-board2xy-map-piece
+  (testing ""
+    (is (= (board2xy-map-piece column-nb raw-nb (initial-board))
+           {[0 0] :r, [1 0] :n, [2 0] :b, [3 0] :q, [4 0] :k, [5 0] :b, [6 0] :n, [7 0] :r,
+            [0 1] :p, [1 1] :p, [2 1] :p, [3 1] :p, [4 1] :p, [5 1] :p, [6 1] :p, [7 1] :p,
+
+            [0 6] :P, [1 6] :P, [2 6] :P, [3 6] :P, [4 6] :P, [5 6] :P, [6 6] :P, [7 6] :P,
+            [0 7] :R, [1 7] :N, [2 7] :B, [3 7] :Q, [4 7] :K, [5 7] :B, [6 7] :N, [7 7] :R }))))
+
 (deftest test-file-component
   (testing ""
-    (is (= [(file-component \a)
+    (is (= [(file-component \:)
+            (file-component \a)
             (file-component \b)
             (file-component \c)
             (file-component \d)
+            (file-component \e)
             (file-component \E)
             (file-component \f)
-            (file-component \g)]
-           [0 1 2 3 -28 5 6]))))
+            (file-component \g)
+            (file-component \h)]
+           [-39 0 1 2 3 4 -28 5 6 7]))))
 
 (def rank-component-test (partial rank-component column-nb))
 
@@ -121,6 +138,98 @@
             (rank-component 8 \8)
             (rank-component 8 \9)]
            [64 56 48 40 32 -368 8 0 -8]))))
+
+(deftest test-rank2coord
+  (testing ""
+    (is (= (map #(rank2coord raw-nb %)
+                [\: \9 \8 \7 \6 \5 \4 \3 \2 \1])
+
+           '(0 1 2 3 4 5 6 7 8 9)
+           ))))
+
+(deftest test-rank2coord-chess
+  (testing ""
+    (is (= (map #(rank2coord 8 %)
+                [\8 \7 \6 \5 \4 \3 \2 \1])
+
+           '(0 1 2 3 4 5 6 7)
+           ))))
+
+
+(deftest test-coord2pos1
+  (testing ""
+    (is (= (map #(coord2pos column-nb raw-nb %) (for [y (range 0 raw-nb)
+                                                  x (range 0 column-nb)
+                                          ]
+                                                  [x y]))
+           ["a:" "b:" "c:" "d:" "e:" "f:" "g:" "h:" "i:"
+            "a9" "b9" "c9" "d9" "e9" "f9" "g9" "h9" "i9"
+            "a8" "b8" "c8" "d8" "e8" "f8" "g8" "h8" "i8"
+            "a7" "b7" "c7" "d7" "e7" "f7" "g7" "h7" "i7"
+            "a6" "b6" "c6" "d6" "e6" "f6" "g6" "h6" "i6"
+            "a5" "b5" "c5" "d5" "e5" "f5" "g5" "h5" "i5"
+            "a4" "b4" "c4" "d4" "e4" "f4" "g4" "h4" "i4"
+            "a3" "b3" "c3" "d3" "e3" "f3" "g3" "h3" "i3"
+            "a2" "b2" "c2" "d2" "e2" "f2" "g2" "h2" "i2"
+            "a1" "b1" "c1" "d1" "e1" "f1" "g1" "h1" "i1"]
+           ))))
+
+(deftest test-coord2pos-chess
+  (testing ""
+    (is (= (map #(coord2pos 8 8 %) (for [y (range 0 8)
+                                         x (range 0 8)
+                                          ]
+                                     [x y]))
+           [
+            "a8" "b8" "c8" "d8" "e8" "f8" "g8" "h8"
+            "a7" "b7" "c7" "d7" "e7" "f7" "g7" "h7"
+            "a6" "b6" "c6" "d6" "e6" "f6" "g6" "h6"
+            "a5" "b5" "c5" "d5" "e5" "f5" "g5" "h5"
+            "a4" "b4" "c4" "d4" "e4" "f4" "g4" "h4"
+            "a3" "b3" "c3" "d3" "e3" "f3" "g3" "h3"
+            "a2" "b2" "c2" "d2" "e2" "f2" "g2" "h2"
+            "a1" "b1" "c1" "d1" "e1" "f1" "g1" "h1"]
+           ))))
+
+(pos2coord raw-nb "i1")
+
+(deftest test-pos2coord1
+  (testing ""
+    (is (= (map #(pos2coord raw-nb %)
+                ["a:" "b:" "c:" "d:" "e:" "f:" "g:" "h:" "i:"
+            "a9" "b9" "c9" "d9" "e9" "f9" "g9" "h9" "i9"
+            "a8" "b8" "c8" "d8" "e8" "f8" "g8" "h8" "i8"
+            "a7" "b7" "c7" "d7" "e7" "f7" "g7" "h7" "i7"
+            "a6" "b6" "c6" "d6" "e6" "f6" "g6" "h6" "i6"
+            "a5" "b5" "c5" "d5" "e5" "f5" "g5" "h5" "i5"
+            "a4" "b4" "c4" "d4" "e4" "f4" "g4" "h4" "i4"
+            "a3" "b3" "c3" "d3" "e3" "f3" "g3" "h3" "i3"
+            "a2" "b2" "c2" "d2" "e2" "f2" "g2" "h2" "i2"
+            "a1" "b1" "c1" "d1" "e1" "f1" "g1" "h1" "i1"])
+
+           (for [y (range 0 raw-nb)
+                 x (range 0 column-nb)
+                 ]
+             [x y])
+           ))))
+
+(deftest test-pos2coord-chess
+  (testing ""
+    (is (= (map #(pos2coord 8 %)           [
+            "a8" "b8" "c8" "d8" "e8" "f8" "g8" "h8"
+            "a7" "b7" "c7" "d7" "e7" "f7" "g7" "h7"
+            "a6" "b6" "c6" "d6" "e6" "f6" "g6" "h6"
+            "a5" "b5" "c5" "d5" "e5" "f5" "g5" "h5"
+            "a4" "b4" "c4" "d4" "e4" "f4" "g4" "h4"
+            "a3" "b3" "c3" "d3" "e3" "f3" "g3" "h3"
+            "a2" "b2" "c2" "d2" "e2" "f2" "g2" "h2"
+            "a1" "b1" "c1" "d1" "e1" "f1" "g1" "h1"])
+
+           (for [y (range 0 8)
+                 x (range 0 8)
+                 ]
+             [x y])
+           ))))
 
 (def collid?-test (partial collid? column-nb raw-nb (initial-board)))
 
@@ -184,6 +293,66 @@
             false false false false false false false false false
             false false false false false false false false false]
 
+           ))))
+
+(deftest test-collid-opposite-white
+  (testing ""
+    (is (= (map #(collid-oposite? column-nb raw-nb (initial-board) true %) (for [y (range 0 raw-nb)
+                                                  x (range 0 column-nb)
+                                          ]
+                                      [x y]))
+           [true  true  true  true  true  true  true  true  false
+            true  true  true  true  true  true  true  true  false
+            false false false false false false false false false
+            false false false false false false false false false
+            false false false false false false false false false
+            false false false false false false false false false
+            false false false false false false false false false
+            false false false false false false false false false
+            false false false false false false false false false
+            false false false false false false false false false]
+
+           ))))
+
+(deftest test-collid-opposite-black
+  (testing ""
+    (is (= (map #(collid-oposite? column-nb raw-nb (initial-board) false %) (for [y (range 0 raw-nb)
+                                                  x (range 0 column-nb)
+                                          ]
+                                      [x y]))
+           [false false false false false false false false false
+            false false false false false false false false false
+            false false false false false false false false false
+            false false false false false false false false false
+            false false false false false false false false false
+            false false false false false false false false false
+            true  true  true  true  true  true  true  true  false
+            true  true  true  true  true  true  true  true  false
+            false false false false false false false false false
+            false false false false false false false false false]
+
+           ))))
+
+(deftest test-pos-xy-within-board
+  (testing ""
+    (is (= (map #(pos-xy-within-board? column-nb raw-nb %)
+                (for [y (range -1 (inc raw-nb))
+                      x (range -1 (inc column-nb))
+                      ]
+                  [x y]))
+           [false false false false false false false false false false false
+            false true  true  true  true  true  true  true  true  true  false
+            false true  true  true  true  true  true  true  true  true  false
+            false true  true  true  true  true  true  true  true  true  false
+            false true  true  true  true  true  true  true  true  true  false
+            false true  true  true  true  true  true  true  true  true  false
+            false true  true  true  true  true  true  true  true  true  false
+            false true  true  true  true  true  true  true  true  true  false
+            false true  true  true  true  true  true  true  true  true  false
+            false true  true  true  true  true  true  true  true  true  false
+            false true  true  true  true  true  true  true  true  true  false
+            false false false false false false false false false false false
+            ]
            ))))
 
 
