@@ -84,6 +84,12 @@
   (let [[b1 b2] (if (= (.compareTo y2 y1) 1) [y1 y2] [y2 y1])]
       (for [a (range (inc b1) b2)] [x1 a])))
 
+(defn- pos-between-vertical-incl [[x1 y1] [x2 y2]]
+  (let [[b1 b2] (if (= (.compareTo y2 y1) 1) [y1 y2] [y2 y1])]
+    (for [a (range b1 (inc b2))] [x1 a])))
+
+(pos-between-vertical-incl [0 0] [0 4])
+
 (defn pos-between-xy [[x1 y1] [x2 y2]]
   {:pre [(let [absslop (math/abs (/ (- y2 y1) (- x2 x1)))]
            ;(println absslop)
@@ -93,9 +99,47 @@
           slop (/ (- y2 y1) (- x2 x1))
           [step a b] (if forward? [1 x1 y1] [-1 x2 y2])
          f (fn [x] [(+ a (* 1 x)) (+ b (* slop x))])]
-      (map f (range 1 (math/abs(- x2 x1))))))
+    (map f (range 1 (math/abs(- x2 x1))))))
+
+(defn pos-between-xy-incl [[x1 y1] [x2 y2]]
+  {:pre [(let [absslop (math/abs (/ (- y2 y1) (- x2 x1)))]
+           ;(println absslop)
+           (or (= absslop 1)
+               (= absslop 0)))]}
+  (let [forward? (> (- x2 x1) 0)
+          slop (/ (- y2 y1) (- x2 x1))
+          [step a b] (if forward? [1 x1 y1] [-1 x2 y2])
+         f (fn [x] [(+ a (* 1 x)) (+ b (* slop x))])]
+      (map f (range 0 (inc (math/abs(- x2 x1)))))))
+
+
 
 (defn pos-between [p1 p2]
+  (if (is-vertical? p1 p2)
+    (pos-between-vertical p1 p2)
+    (pos-between-xy p1 p2)))
+
+(defn pos-between-incl [p1 p2]
+  (if (is-vertical? p1 p2)
+    (pos-between-vertical-incl p1 p2)
+    (pos-between-xy-incl p1 p2)))
+
+;;(pos-between-incl [0 0] [4 0])
+
+
+(defn move [pos [xd yd]]
+      (let [[x y] pos]
+        [(+ x xd) (+ y yd)]))
+
+;;(move 0 0 0)
+
+(defn left [pos] (move pos [-1 0]))
+(defn right [pos] (move pos [+1 0]))
+(defn up [pos] (move pos [0 -1]))
+(defn down [pos] (move pos [0 +1]))
+
+
+(defn pos-between-incl [p1 p2]
   (if (is-vertical? p1 p2)
     (pos-between-vertical p1 p2)
     (pos-between-xy p1 p2)))
