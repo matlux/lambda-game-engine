@@ -113,7 +113,6 @@
       (map f (range 0 (inc (math/abs(- x2 x1)))))))
 
 
-
 (defn pos-between [p1 p2]
   (if (is-vertical? p1 p2)
     (pos-between-vertical p1 p2)
@@ -125,6 +124,10 @@
     (pos-between-xy-incl p1 p2)))
 
 ;;(pos-between-incl [0 0] [4 0])
+;; (pos-between-incl [2 0] [0 2])
+;; (is-vertical? [2 0] [0 2])
+;; (pos-between-xy-incl [2 0] [0 2])
+;; (pos-between-vertical-incl [2 0] [0 2])
 
 
 (defn move [pos [xd yd]]
@@ -138,11 +141,6 @@
 (defn up [pos] (move pos [0 -1]))
 (defn down [pos] (move pos [0 +1]))
 
-
-(defn pos-between-incl [p1 p2]
-  (if (is-vertical? p1 p2)
-    (pos-between-vertical p1 p2)
-    (pos-between-xy p1 p2)))
 
 (defn pos-between-1d [column-nb p1 p2]
   (map #(c2dto1d column-nb %) (pos-between p1 p2)))

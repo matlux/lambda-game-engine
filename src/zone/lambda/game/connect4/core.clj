@@ -2,7 +2,7 @@
   (:require
    [net.matlux.utils :refer [unfold dbg]]
    [zone.lambda.game.board :as board :refer [pos-between pos-between-incl BLANK]]
-   [zone.lambda.game.engine :as engine :refer [game-step-monad-wrap play-game-seq seq-result]]
+   [zone.lambda.game.engine :as engine :refer [game-step-monad-wrap play-game-seq seq-result play-scenario-seq create-fns-from-scenario]]
    )
   )
 
@@ -42,6 +42,13 @@
    :. :. :o :x :o :x :.
    :. :o :x :x :o :x :.
    :o :x :o :x :x :x :.])
+(def test-board3
+  [:. :. :. :. :. :. :.
+   :. :. :. :. :. :. :.
+   :. :. :. :o :. :. :.
+   :. :. :o :x :. :. :.
+   :. :o :x :x :. :. :.
+   :o :o :x :x :. :. :.])
 
 (defn get-column-1d [col]
   (pos-between-1d [col -1] [col raw-nb]))
@@ -58,9 +65,8 @@
 (defn is-valid? [board move]
   (and (< move column-nb) (>= move 0) (< (stack-size board move) raw-nb)))
 
-(is-valid? test-board 6)
-(stack-size test-board 6)
-
+;; (is-valid? test-board 6)
+;; (stack-size test-board 6)
 
 (defn insert-token [board col token]
   (let [y (stack-top board col)
@@ -99,6 +105,8 @@
              (pos-between-incl [x 0] [0 x])))
        (remove empty?)))
 
+;;(pos-between-incl [2 0] [0 2])
+
 (defn get-diagonals2 [board]
   (->> (for [y (range 0 (* raw-nb 2))
          ]
@@ -106,15 +114,13 @@
              (pos-between-incl [(- (dec column-nb) y) 0] [(dec column-nb) y])))
        (remove empty?)))
 
+;; (get-horizontals test-board)
 
-
-(get-horizontals test-board)
-
-(get-verticals test-board)
-(map count (get-diagonals test-board))
-(map count (get-diagonals2 test-board))
-
-
+;; (get-verticals test-board)
+;; (map count (get-diagonals test-board))
+;; (map count (get-diagonals2 test-board))
+;; (map count (get-diagonals test-board3))
+;; (map count (get-diagonals2 test-board3))
 
 (defn get-all-lines [board]
                (concat
@@ -126,16 +132,6 @@
 
 (defn get-piece [board pos]
   (get board (c2dto1d pos)))
-
-(defn four-in-rowold [line]
-  (= 4 (count (reduce (fn [acc e]
-                        (if (= (count acc) 4)
-                          (reduced acc)
-                          (if (and (seq acc) (= (first acc) e))
-                            (conj acc e)
-                            [e])))
-                      []
-                      line))))
 
 (defn four-in-row [line board]
   (= 4 (count (reduce (fn [acc coord]
@@ -165,11 +161,23 @@
           line))
 
 
-(get-piece test-board [5 3])
+;; (get-piece test-board [5 3])
 
+;; (= 4 (count (reduce (fn [acc coord]
+;;                         (let [piece (get-piece test-board coord)]
+;;                           (if (= (count acc) 4)
+;;                            (reduced acc)
+;;                            (if (= piece BLANK)
+;;                              []
+;;                              (if (and (seq acc) (= (first acc) piece))
+;;                                (conj acc piece)
+;;                                [piece])))))
+;;                       []
+;;                       (list [3 5] [4 4] [5 3] [6 2]))))
 ;;(four-in-row [:. :x :o :o :o  :x])
 (four-in-row [[3 5] [4 4] [5 3] [6 2]] test-board)
-(four-in-row [[3 5] [4 4] [5 3] [6 3]] test-board)
+(four-in-row (list [3 5] [4 4] [5 3] [6 2]) test-board)
+(four-in-row (list [3 5] [4 4] [5 3] [6 3]) test-board)
 (mark-four [[3 5] [4 4] [5 3] [6 2]] test-board)
 (mark-four [[0 0] [1 0] [2 0] [3 0] [4 0]] test-board)
 
@@ -195,6 +203,16 @@
 (find-ffour test-board)
 (find-fours test-board2)
 (find-ffour test-board2)
+(find-fours test-board3)
+;; (count (get-all-lines test-board3))
+;; (for [line (get-all-lines test-board3)
+;;         :when (four-in-row line test-board3)]
+;;   line)
+
+
+;; (([0 0] [1 0] [2 0] [3 0] [4 0] [5 0] [6 0]) ([0 1] [1 1] [2 1] [3 1] [4 1] [5 1] [6 1]) ([0 2] [1 2] [2 2] [3 2] [4 2] [5 2] [6 2]) ([0 3] [1 3] [2 3] [3 3] [4 3] [5 3] [6 3]) ([0 4] [1 4] [2 4] [3 4] [4 4] [5 4] [6 4]) ([0 5] [1 5] [2 5] [3 5] [4 5] [5 5] [6 5]) ([0 0] [0 1] [0 2] [0 3] [0 4] [0 5]) ([1 0] [1 1] [1 2] [1 3] [1 4] [1 5]) ([2 0] [2 1] [2 2] [2 3] [2 4] [2 5]) ([3 0] [3 1] [3 2] [3 3] [3 4] [3 5]) ([4 0] [4 1] [4 2] [4 3] [4 4] [4 5]) ([5 0] [5 1] [5 2] [5 3] [5 4] [5 5]) ([6 0] [6 1] [6 2] [6 3] [6 4] [6 5]) ([1 1]) ([1 2] [2 1]) ([1 3] [2 2] [3 1]) ([1 4] [2 3] [3 2] [4 1]) ([1 5] [2 4] [3 3] [4 2] [5 1]) ([2 5] [3 4] [4 3] [5 2] [6 1]) ([3 5] [4 4] [5 3] [6 2]) ([4 5] [5 4] [6 3]) ([5 5] [6 4]) ([6 5]) ([5 1]) ([4 1] [5 2]) ([3 1] [4 2] [5 3]) ([2 1] [3 2] [4 3] [5 4]) ([1 1] [2 2] [3 3] [4 4] [5 5]) ([0 1] [1 2] [2 3] [3 4] [4 5]) ([0 2] [1 3] [2 4] [3 5]) ([0 3] [1 4] [2 5]) ([0 4] [1 5]) ([0 5]))
+
+(find-ffour test-board3)
 (find-fours initial-board)
 (find-ffour initial-board)
 
@@ -204,6 +222,14 @@
   (find-ffour board))
 
 (test-if-finished test-board)
+(test-if-finished test-board2)
+(test-if-finished test-board3)
+(test-if-finished [:. :. :. :. :. :. :.
+                   :. :. :. :. :. :. :.
+                   :. :. :. :o :. :. :.
+                   :. :. :o :x :. :. :.
+                   :. :o :x :x :. :. :.
+                   :o :o :x :x :. :. :.])
 
 (defn forfeit [is-player1-turn]
   (if is-player1-turn [0 1] [1 0]))
@@ -212,7 +238,7 @@
 
 (defn play-game-step [{:keys [board player1 player2 state-p1 state-p2 is-player1-turn] :as state}]
   (cond (or (nil? player1) (nil? player1)) nil
-        (test-if-finished board)
+        (dbg (test-if-finished (dbg board)))
         (do
           (println "check-mate!")
           [true {:score (opposite-color-wins is-player1-turn) :board board :result :user-win}])
@@ -233,7 +259,19 @@
 ;;(game-step {:board initial-board :is-player1-turn true :player1 interactive-player :player2 interactive-player })
 ;;(game-step {:board initial-board :is-player1-turn true :player1 (create-fn [0 1 2 3]) :player2 (create-fn [0 1 2 4]) })
 ;;(take 2 (unfold game-step {:board initial-board :is-player1-turn true :player1 (create-fn [0 1 2 3]) :player2 (create-fn [0 1 2 4]) }))
+(defn play-scenario-seq2 [initial-board step scenario] (let [[f1 f2] (create-fns-from-scenario scenario)]
+                                 (let [result (play-game-seq step {:board initial-board :player1 f1 :player2 f2})]
+                                   (take (count scenario) result))))
 
+;; (->> (play-scenario-seq2 initial-board game-step  [1 0 2 1 2 2 3 3 3 3 0])
+;;      last (#(do (println %) (identity %))) second  :board display-board)
+
+;; (test-if-finished [:. :. :. :. :. :. :.
+;;                    :. :. :. :. :. :. :.
+;;                    :. :. :. :o :. :. :.
+;;                    :. :. :o :x :. :. :.
+;;                    :. :o :x :x :. :. :.
+;;                    :o :o :x :x :. :. :.])
 
 
 (defn -main []
