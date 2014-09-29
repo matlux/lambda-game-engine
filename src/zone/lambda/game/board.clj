@@ -34,10 +34,6 @@
   ;{:post [(and (< % 8) (>= % 0))]}
   (file-component file))
 
-;; (->> (int *rank-key*)
-;;        (- (int \:))
-;;        (- 10))
-
 (defn rank2coord [raw-nb rank]
   ;;{:post [(and (< % raw-nb) (>= % 0))]}
   (->> (int *rank-key*)
@@ -158,23 +154,12 @@
   {:pre [(string? pos)]}
   (let [[file rank] pos]
     (board (index column-nb file rank))))
+
 (defn lookup-xy [column-nb raw-nb ^PersistentVector board ^PersistentVector [x y :as pos]]
   {:pre [(display-assert (and (vector? pos) (number? (first pos))) pos)]}
-  ;;(lookup column-nb raw-nb board (coord2pos column-nb raw-nb pos))
   (board (index-xy column-nb x y))
   )
-;; (defn initial-board []
-;;   [:r :n :b :q :k :b :n :r :.
-;;    :p :p :p :p :p :p :p :p :.
-;;    :. :. :. :. :. :. :. :. :.
-;;    :. :. :. :. :. :. :. :. :.
-;;    :. :. :. :. :. :. :. :. :.
-;;    :. :. :. :. :. :. :. :. :.
-;;    :P :P :P :P :P :P :P :P :.
-;;    :R :N :B :Q :K :B :N :R :.
-;;    :. :. :. :. :. :. :. :. :.
-;;    :. :. :. :. :. :. :. :. :.])
-;;(lookup-xy 9 10 (initial-board) [0 0])
+
 
 (defn nothing-between [column-nb raw-nb board p1 p2]
   (not-any? is-piece? (map #(lookup-xy column-nb raw-nb board %) (pos-between p1 p2))))
@@ -213,6 +198,112 @@
     ))
 
 (defn collid? [column-nb raw-nb board pos] (not (= (lookup-xy column-nb raw-nb board pos) :.)))
+
+(defn get-horizontals [column-nb raw-nb]
+  (map #(pos-between [-1 %] [column-nb %]) (range 0 raw-nb)))
+
+(defn get-verticals [column-nb raw-nb]
+  (map #(pos-between [% -1] [% raw-nb]) (range 0 column-nb))
+  )
+
+(defn get-diagonals [column-nb raw-nb]
+  (->> (for [x (range 0 (* (max raw-nb column-nb) 2))
+         ]
+     (filter #(pos-xy-within-board? column-nb raw-nb %)
+             (pos-between-incl [x 0] [0 x])))
+       (remove empty?)))
+
+;;(pos-between-incl [2 0] [0 2])
+
+(defn get-diagonals2 [column-nb raw-nb]
+  (->> (for [y (range 0 (* (max raw-nb column-nb) 2))
+         ]
+     (filter #(pos-xy-within-board? column-nb raw-nb %)
+             (pos-between-incl [(- (dec column-nb) y) 0] [(dec column-nb) y])))
+       (remove empty?)))
+
+;; (get-horizontals test-board)
+
+;; (get-verticals test-board)
+;; (map count (get-diagonals test-board))
+;; (map count (get-diagonals2 test-board))
+;; (map count (get-diagonals test-board3))
+;; (map count (get-diagonals2 test-board3))
+
+(defn get-all-lines [column-nb raw-nb]
+               (concat
+                (get-horizontals column-nb raw-nb)
+                (get-verticals column-nb raw-nb)
+                (get-diagonals column-nb raw-nb)
+                (get-diagonals2 column-nb raw-nb)
+                ) )
+
+(defn get-piece [column-nb board pos]
+  (get board (c2dto1d column-nb pos)))
+
+(defn four-in-row [column-nb line board]
+  (= 4 (count (reduce (fn [acc coord]
+                        (let [piece (get-piece column-nb board coord)]
+                          (if (= (count acc) 4)
+                           (reduced acc)
+                           (if (= piece BLANK)
+                             []
+                             (if (and (seq acc) (= (first acc) piece))
+                               (conj acc piece)
+                               [piece])))))
+                      []
+                      line))))
+
+(defn mark-four [column-nb line board]
+  (reduce (fn [acc coord]
+            (let [piece (get-piece column-nb board coord)
+                  last-piece (ffirst acc)]
+              (if (= (count acc) 4)
+                (reduced acc)
+                (if (= piece BLANK)
+                  []
+                  (if (and (seq acc) (= last-piece piece))
+                    (conj acc [piece coord])
+                    [[piece coord]])))))
+          []
+          line))
+
+
+;; (get-piece test-board [5 3])
+
+;;(four-in-row [:. :x :o :o :o  :x])
+;; (four-in-row [[3 5] [4 4] [5 3] [6 2]] test-board)
+;; (four-in-row (list [3 5] [4 4] [5 3] [6 2]) test-board)
+;; (four-in-row (list [3 5] [4 4] [5 3] [6 3]) test-board)
+;; (mark-four [[3 5] [4 4] [5 3] [6 2]] test-board)
+;; (mark-four [[0 0] [1 0] [2 0] [3 0] [4 0]] test-board)
+
+
+(defn find-fours [column-nb raw-nb board]
+  (for [line (get-all-lines column-nb raw-nb)
+        :when (four-in-row column-nb line board)]
+    (mark-four column-nb line board)))
+
+(defn find-ffour [column-nb raw-nb board]
+  (first (find-fours column-nb raw-nb board)))
+
+;; (find-fours test-board)
+;; (find-ffour test-board)
+;; (find-fours test-board2)
+;; (find-ffour test-board2)
+;; (find-fours test-board3)
+;; (count (get-all-lines test-board3))
+;; (for [line (get-all-lines test-board3)
+;;         :when (four-in-row line test-board3)]
+;;   line)
+
+;; (find-ffour test-board3)
+;; (find-fours initial-board)
+;; (find-ffour initial-board)
+
+;;(map #(mark-four % test-board) (get-all-lines test-board))
+
+
 
 (defn generate-line [n]
   (apply str "+" (repeat n "---+")))

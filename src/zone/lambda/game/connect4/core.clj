@@ -13,9 +13,10 @@
 (def c2dto1d (partial board/c2dto1d column-nb))
 (def c1dto2d (partial board/c1dto2d column-nb))
 (def pos-between-1d (partial board/pos-between-1d column-nb))
-(def pos-xy-within-board? (partial board/pos-xy-within-board? column-nb raw-nb))
 
 ;; need both column-nb and raw-nb
+(def find-ffour (partial board/find-ffour column-nb raw-nb))
+(def pos-xy-within-board? (partial board/pos-xy-within-board? column-nb raw-nb))
 (def display-board (partial board/display-board column-nb raw-nb))
 
 (def interactive-player (engine/interactive-player display-board))
@@ -92,144 +93,20 @@
 
 ;;(-> (apply-move *initial-board* 0 false) (apply-move 1 true) (apply-move 0 false))
 
-(defn get-horizontals [board]
-  (map #(pos-between [-1 %] [column-nb %]) (range 0 raw-nb)))
-
-(defn get-verticals [board]
-  (map #(pos-between [% -1] [% raw-nb]) (range 0 column-nb)))
-
-(defn get-diagonals [board]
-  (->> (for [x (range 0 (* column-nb 2))
-         ]
-     (filter #(pos-xy-within-board? %)
-             (pos-between-incl [x 0] [0 x])))
-       (remove empty?)))
-
-;;(pos-between-incl [2 0] [0 2])
-
-(defn get-diagonals2 [board]
-  (->> (for [y (range 0 (* raw-nb 2))
-         ]
-     (filter #(pos-xy-within-board? %)
-             (pos-between-incl [(- (dec column-nb) y) 0] [(dec column-nb) y])))
-       (remove empty?)))
-
-;; (get-horizontals test-board)
-
-;; (get-verticals test-board)
-;; (map count (get-diagonals test-board))
-;; (map count (get-diagonals2 test-board))
-;; (map count (get-diagonals test-board3))
-;; (map count (get-diagonals2 test-board3))
-
-(defn get-all-lines [board]
-               (concat
-                (get-horizontals board)
-                (get-verticals board)
-                (get-diagonals board)
-                (get-diagonals2 board)
-                ) )
-
-(defn get-piece [board pos]
-  (get board (c2dto1d pos)))
-
-(defn four-in-row [line board]
-  (= 4 (count (reduce (fn [acc coord]
-                        (let [piece (get-piece board coord)]
-                          (if (= (count acc) 4)
-                           (reduced acc)
-                           (if (= piece BLANK)
-                             []
-                             (if (and (seq acc) (= (first acc) piece))
-                               (conj acc piece)
-                               [piece])))))
-                      []
-                      line))))
-
-(defn mark-four [line board]
-  (reduce (fn [acc coord]
-            (let [piece (get-piece board coord)
-                  last-piece (ffirst acc)]
-              (if (= (count acc) 4)
-                (reduced acc)
-                (if (= piece BLANK)
-                  []
-                  (if (and (seq acc) (= last-piece piece))
-                    (conj acc [piece coord])
-                    [[piece coord]])))))
-          []
-          line))
-
-
-;; (get-piece test-board [5 3])
-
-;; (= 4 (count (reduce (fn [acc coord]
-;;                         (let [piece (get-piece test-board coord)]
-;;                           (if (= (count acc) 4)
-;;                            (reduced acc)
-;;                            (if (= piece BLANK)
-;;                              []
-;;                              (if (and (seq acc) (= (first acc) piece))
-;;                                (conj acc piece)
-;;                                [piece])))))
-;;                       []
-;;                       (list [3 5] [4 4] [5 3] [6 2]))))
-;;(four-in-row [:. :x :o :o :o  :x])
-(four-in-row [[3 5] [4 4] [5 3] [6 2]] test-board)
-(four-in-row (list [3 5] [4 4] [5 3] [6 2]) test-board)
-(four-in-row (list [3 5] [4 4] [5 3] [6 3]) test-board)
-(mark-four [[3 5] [4 4] [5 3] [6 2]] test-board)
-(mark-four [[0 0] [1 0] [2 0] [3 0] [4 0]] test-board)
-
-(reduce (fn [acc e]
-          (if (= (count acc) 4)
-            (reduced acc)
-            (if (and (seq acc) (= (first acc) e))
-                              (conj acc e)
-                              [e])))
-        []
-        [:. :x :o :o :o :o :x])
-
-
-(defn find-fours [board]
-  (for [line (get-all-lines board)
-        :when (four-in-row line board)]
-    (mark-four line board)))
-
-(defn find-ffour [board]
-  (first (find-fours board)))
-
-(find-fours test-board)
-(find-ffour test-board)
-(find-fours test-board2)
-(find-ffour test-board2)
-(find-fours test-board3)
-;; (count (get-all-lines test-board3))
-;; (for [line (get-all-lines test-board3)
-;;         :when (four-in-row line test-board3)]
-;;   line)
-
-
-;; (([0 0] [1 0] [2 0] [3 0] [4 0] [5 0] [6 0]) ([0 1] [1 1] [2 1] [3 1] [4 1] [5 1] [6 1]) ([0 2] [1 2] [2 2] [3 2] [4 2] [5 2] [6 2]) ([0 3] [1 3] [2 3] [3 3] [4 3] [5 3] [6 3]) ([0 4] [1 4] [2 4] [3 4] [4 4] [5 4] [6 4]) ([0 5] [1 5] [2 5] [3 5] [4 5] [5 5] [6 5]) ([0 0] [0 1] [0 2] [0 3] [0 4] [0 5]) ([1 0] [1 1] [1 2] [1 3] [1 4] [1 5]) ([2 0] [2 1] [2 2] [2 3] [2 4] [2 5]) ([3 0] [3 1] [3 2] [3 3] [3 4] [3 5]) ([4 0] [4 1] [4 2] [4 3] [4 4] [4 5]) ([5 0] [5 1] [5 2] [5 3] [5 4] [5 5]) ([6 0] [6 1] [6 2] [6 3] [6 4] [6 5]) ([1 1]) ([1 2] [2 1]) ([1 3] [2 2] [3 1]) ([1 4] [2 3] [3 2] [4 1]) ([1 5] [2 4] [3 3] [4 2] [5 1]) ([2 5] [3 4] [4 3] [5 2] [6 1]) ([3 5] [4 4] [5 3] [6 2]) ([4 5] [5 4] [6 3]) ([5 5] [6 4]) ([6 5]) ([5 1]) ([4 1] [5 2]) ([3 1] [4 2] [5 3]) ([2 1] [3 2] [4 3] [5 4]) ([1 1] [2 2] [3 3] [4 4] [5 5]) ([0 1] [1 2] [2 3] [3 4] [4 5]) ([0 2] [1 3] [2 4] [3 5]) ([0 3] [1 4] [2 5]) ([0 4] [1 5]) ([0 5]))
-
-(find-ffour test-board3)
-(find-fours initial-board)
-(find-ffour initial-board)
-
-;;(map #(mark-four % test-board) (get-all-lines test-board))
-
 (defn test-if-finished [board]
   (find-ffour board))
 
-(test-if-finished test-board)
-(test-if-finished test-board2)
-(test-if-finished test-board3)
-(test-if-finished [:. :. :. :. :. :. :.
-                   :. :. :. :. :. :. :.
-                   :. :. :. :o :. :. :.
-                   :. :. :o :x :. :. :.
-                   :. :o :x :x :. :. :.
-                   :o :o :x :x :. :. :.])
+;; (test-if-finished test-board)
+;; (test-if-finished test-board2)
+;; (test-if-finished test-board3)
+;; (test-if-finished [:. :. :. :. :. :. :.
+;;                    :. :. :. :. :. :. :.
+;;                    :. :. :. :o :. :. :.
+;;                    :. :. :o :x :. :. :.
+;;                    :. :o :x :x :. :. :.
+;;                    :o :o :x :x :. :. :.])
+
+
 
 (defn forfeit [is-player1-turn]
   (if is-player1-turn [0 1] [1 0]))
