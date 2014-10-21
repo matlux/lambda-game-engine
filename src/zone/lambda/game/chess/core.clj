@@ -807,8 +807,11 @@
 ;;                                    result)))
 
 
-(defn play-scenario-seq [step scenario] (let [[f1 f2] (create-fns-from-scenario scenario)]
-                                 (let [result (play-game-seq step {:board (initial-board) :history [] :f1 f1 :f2 f2})]
+(defn play-scenario-seq [step scenario & [state]] (let [[f1 f2] (create-fns-from-scenario scenario)]
+                                                  (let [result (play-game-seq step
+                                                                              (merge
+                                                                               {:board (initial-board) :history [] :f1 f1 :f2 f2}
+                                                                               state))]
                                    (take (count scenario) result))))
 
 ;; (defn play-scenario-seq [scenario]
@@ -825,9 +828,9 @@
 ;;(game-step (merge {:board (initial-board) :f1  (fn [_] ["e8" "A4"]) :f2 (fn [_] ["e8" "A4"])} {:board (initial-board) :history []}))
 
 
-(defn play-scenario [scenario]
+(defn play-scenario [scenario & [state]]
   (seq-result
-   (play-scenario-seq game-step scenario)))
+   (play-scenario-seq game-step scenario state)))
 
 (comment
   (take 10 (play-scenario  [["e2" "e4"] ["e7" "e5"]

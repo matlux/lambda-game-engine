@@ -69,6 +69,34 @@
    :P :P :P :P :. :P :P :P
    :R :N :B :. :K :. :N :R])
 
+(def promotion-check-board ;; it's white's turn
+  [:. :. :. :. :k :. :. :.
+   :. :P :. :. :. :. :. :.
+   :. :. :. :. :. :. :. :.
+   :. :. :. :. :. :. :. :.
+   :. :. :. :. :. :. :. :.
+   :. :. :. :. :. :. :. :.
+   :. :. :. :. :. :. :. :.
+   :. :. :. :. :K :. :. :.])
+
+(def promotion-result-board ;; it's white's turn
+  [:. :Q :. :. :k :. :. :.
+   :. :. :. :. :. :. :. :.
+   :. :. :. :. :. :. :. :.
+   :. :. :. :. :. :. :. :.
+   :. :. :. :. :. :. :. :.
+   :. :. :. :. :. :. :. :.
+   :. :. :. :. :. :. :. :.
+   :. :. :. :. :K :. :. :.])
+
+
+(deftest test-promotion
+  (testing ""
+    (is
+     (=
+      (:board (play-scenario  [["b7" "b8"]] {:board promotion-check-board}))
+      promotion-result-board))))
+
 (deftest test-filing
 
   (testing ""
