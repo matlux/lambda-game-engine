@@ -210,6 +210,11 @@
         front [x (op y 1)]
         front2 [x (op y 2)]
         moves (vector
+               (when (and
+                      (pos-xy-within-board? front)
+                      (not (pos-xy-within-board? front2))
+                      (not (collid? board front)))
+                 {:move-to front :promote-to (if white? :Q :q)})
                (when (and (pos-xy-within-board? right-diag)
                           (collid-oposite? board white? right-diag))
                  {:move-to right-diag} )
@@ -235,6 +240,7 @@
 
                )
         ]
+    ;(println "pawn-moves" moves)
     (filter (comp not nil?) moves)))
 
 ;;(not (= (lookup-xy (initial-board) [2 1]) :.))
@@ -253,8 +259,10 @@
     (let [[x y] (pos2coord pos)
           last-move (last history)
           moves (pawn-moves board white? last-move x y)
-          no-self-collision? (comp not (partial collid-self? board white?))]
-      (filter #(no-self-collision? (:move-to %)) (filter #(pos-xy-within-board? (:move-to %)) moves)))))
+          no-self-collision? (comp not (partial collid-self? board white?))
+          moves-filtered (filter #(no-self-collision? (:move-to %)) (filter #(pos-xy-within-board? (:move-to %)) moves))]
+      (println "getMoves" moves-filtered)
+      moves-filtered)))
 
 
 ;;(->> (Pawn. (en-passant-check-test) "d5" white [[(pos2coord "e7") (pos2coord "e5")]]) getMoves first meta)
@@ -503,12 +511,17 @@
 (defn apply-move [^PersistentVector board ^PersistentVector move] ;; xy or xymap
   (let [[from to] move
         en-passant (:en-passant to)
+        promote-to (:promote-to to)
         taken (:taken to)
         b (:board to)
+       ; promote-to (:promote-to to)
         real-to (if en-passant (:move-to to) to)
         piece (lookup-xy board from)
+        real-piece (if (nil? promote-to) piece promote-to)
         new-board (-> (assoc board (apply index-xy from) :.)
                       (assoc (apply index-xy real-to) piece))]
+    ;(println "MOVE :" move)
+
     (if en-passant
       (assoc new-board (apply index-xy taken) :.)
       new-board)))
@@ -661,7 +674,10 @@
               (let [
                    move-xy (move2move-xy  norm-move)
                    en-passant-move-xymap (move-en-passant board is-player1-turn false history move-xy)
-                   real-move (if en-passant-move-xymap en-passant-move-xymap move-xy)]
+                    real-move (if en-passant-move-xymap en-passant-move-xymap move-xy)]
+                (println "all-possible-moves.. " (all-possible-moves-with-in-check board is-player1-turn history))
+                (println "f-return " f-return "valid-moves " valid-moves ":state " (get-playing-f-state game-context) "game-context " game-context)
+                (println "norm-move (chord) " norm-move "real-move (X Y) "  real-move "move " move)
                (vector false (log channel (merge
                                     {:board (apply-move board real-move)
                                      :f1 f1 :f2 f2 :id1 id1 :id2 id2
