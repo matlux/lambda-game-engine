@@ -261,7 +261,7 @@
           moves (pawn-moves board white? last-move x y)
           no-self-collision? (comp not (partial collid-self? board white?))
           moves-filtered (filter #(no-self-collision? (:move-to %)) (filter #(pos-xy-within-board? (:move-to %)) moves))]
-      (println "getMoves" moves-filtered)
+     ; (println "getMoves" moves-filtered)
       moves-filtered)))
 
 
@@ -515,16 +515,15 @@
         taken (:taken to)
         b (:board to)
        ; promote-to (:promote-to to)
-        real-to (if en-passant (:move-to to) to)
+        real-to (if en-passant (:move-to to) (if promote-to (:move-to to) to))
         piece (lookup-xy board from)
         real-piece (if (nil? promote-to) piece promote-to)
         new-board (-> (assoc board (apply index-xy from) :.)
-                      (assoc (apply index-xy real-to) piece))]
-    ;(println "MOVE :" move)
-
+                        (assoc (apply index-xy real-to) real-piece))]
     (if en-passant
       (assoc new-board (apply index-xy taken) :.)
-      new-board)))
+      new-board)
+    ))
 
 ;;(display-board (apply-move (initial-board) ["b2" "b3"]))
 
@@ -572,6 +571,13 @@
     (first (filter #(let [[from {to :move-to :as tomap}] %] (and (= move [from to])
                           (:en-passant tomap)))
                    moves-xy-map))))
+
+(defn promotion-move [^PersistentVector board ^Boolean is-player1-turn ^Boolean castle? ^PersistentVector history ^PersistentVector move]
+  (let [moves-xy-map (all-possible-moves-with-in-check board is-player1-turn history)]
+    (first (filter #(let [[from {to :move-to :as tomap}] %] (and (= move [from to])
+                          (:promote-to tomap)))
+                   moves-xy-map))))
+
 ;;(play-scenario [["e2" "e4"] ["d7" "d5"] ["e4" "d5"] ["e7" "e5"] ["d5" "e6"] ["d5" "e6"]])
 
 ;;(is-move-valid? (en-passant-check-test) white false (move2move-xy-vec [["c7" "c5"]]) (move2move-xy ["d5" "c6"]))
@@ -645,6 +651,8 @@
              )
 (quote board f1 f2 history)
 
+
+
 ;;(display-board (apply-move-safe (initial-board) true false ["a2" "b3"]))
 (defn play-game-step [{:keys [board f1 f2 id1 id2 is-player1-turn history state-f1 state-f2 iteration channel game-id] :as game-context}]
   {:pre [(display-assert (and (some? board) (some? history)) board history)]}
@@ -673,11 +681,14 @@
               (vector true {:score (forfeit is-player1-turn) :history new-history :board board :result :invalid-move})
               (let [
                    move-xy (move2move-xy  norm-move)
-                   en-passant-move-xymap (move-en-passant board is-player1-turn false history move-xy)
-                    real-move (if en-passant-move-xymap en-passant-move-xymap move-xy)]
-                (println "all-possible-moves.. " (all-possible-moves-with-in-check board is-player1-turn history))
-                (println "f-return " f-return "valid-moves " valid-moves ":state " (get-playing-f-state game-context) "game-context " game-context)
-                (println "norm-move (chord) " norm-move "real-move (X Y) "  real-move "move " move)
+                    en-passant-move-xymap (move-en-passant board is-player1-turn false history move-xy)
+                    promotion-move-xymap (promotion-move board is-player1-turn false history move-xy)
+                    real-move (if en-passant-move-xymap en-passant-move-xymap
+                                  (if promotion-move-xymap promotion-move-xymap  move-xy))]
+                ;(println "promotion-move" promotion-move-xymap)
+                ;(println "all-possible-moves.. " (all-possible-moves-with-in-check board is-player1-turn history))
+                ;(println "f-return " f-return "valid-moves " valid-moves ":state " (get-playing-f-state game-context) "game-context " game-context)
+               ; (println "norm-move (chord) " norm-move "real-move (X Y) "  real-move "move " move)
                (vector false (log channel (merge
                                     {:board (apply-move board real-move)
                                      :f1 f1 :f2 f2 :id1 id1 :id2 id2
