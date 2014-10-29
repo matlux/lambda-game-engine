@@ -97,6 +97,27 @@
       (:board (play-scenario  [["b7" "b8"]] {:board promotion-check-board}))
       promotion-result-board))))
 
+(deftest test-no-promotion-when-not-a-pawn
+  (testing "double checking if not-pawns won't be promoted")
+  (is
+   (=
+    (:board (play-scenario [["b7" "b8"]] {:board  [:. :. :. :. :k :. :. :.
+                                                   :. :K :. :. :. :. :. :.
+                                                   :. :. :. :. :. :. :. :.
+                                                   :. :. :. :. :. :. :. :.
+                                                   :. :. :. :. :. :. :. :.
+                                                   :. :. :. :. :. :. :. :.
+                                                   :. :. :. :. :. :. :. :.
+                                                   :. :. :. :. :R :. :. :.]}))
+     [:. :K :. :. :k :. :. :.
+      :. :. :. :. :. :. :. :.
+      :. :. :. :. :. :. :. :.
+      :. :. :. :. :. :. :. :.
+      :. :. :. :. :. :. :. :.
+      :. :. :. :. :. :. :. :.
+      :. :. :. :. :. :. :. :.
+      :. :. :. :. :R :. :. :.])))
+
 (deftest test-filing
 
   (testing ""

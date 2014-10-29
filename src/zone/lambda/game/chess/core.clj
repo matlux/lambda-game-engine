@@ -632,6 +632,19 @@
              )
 (quote board f1 f2 history)
 
+(defn check-for-promotion [board white? [from to :as move]]
+  (let [[x y] from
+        [op start-rank] (if white? [- 6] [+ 1])
+        front [x (op y 1)]
+        front2 [x (op y 2)]]
+    (if (and
+         (= (if white? :P :p) (get board (apply index-xy to)))
+             (pos-xy-within-board? front)
+             (not (pos-xy-within-board? front2)))
+      (assoc board (apply index-xy to) (if white? :Q :q))
+      board)))
+
+
 ;;(display-board (apply-move-safe (initial-board) true false ["a2" "b3"]))
 (defn play-game-step [{:keys [board f1 f2 id1 id2 is-player1-turn history state-f1 state-f2 iteration channel game-id] :as game-context}]
   {:pre [(display-assert (and (some? board) (some? history)) board history)]}
@@ -661,10 +674,12 @@
               (let [
                    move-xy (move2move-xy  norm-move)
                    en-passant-move-xymap (move-en-passant board is-player1-turn false history move-xy)
-                   real-move (if en-passant-move-xymap en-passant-move-xymap move-xy)]
+                    real-move (if en-passant-move-xymap en-passant-move-xymap move-xy)
+                    board-after-move (apply-move board real-move)
+                    final-board (check-for-promotion board-after-move is-player1-turn move-xy)]
                (vector false (log channel (merge
-                                    {:board (apply-move board real-move)
-                                     :f1 f1 :f2 f2 :id1 id1 :id2 id2
+                                           {:board final-board
+                                            :f1 f1 :f2 f2 :id1 id1 :id2 id2
                                      :msg-type :in-game-update
                                      :game-id game-id
                                      :is-player1-turn (not is-player1-turn) :history new-history :channel channel :iteration new-iteration}
