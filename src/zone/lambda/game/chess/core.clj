@@ -210,6 +210,11 @@
         front [x (op y 1)]
         front2 [x (op y 2)]
         moves (vector
+               (when (and
++                      (pos-xy-within-board? front)
++                      (not (pos-xy-within-board? front2))
++                      (not (collid? board front)))
++                 {:move-to front :promote-to (if white? :Q :q)})
                (when (and (pos-xy-within-board? right-diag)
                           (collid-oposite? board white? right-diag))
                  {:move-to right-diag} )
