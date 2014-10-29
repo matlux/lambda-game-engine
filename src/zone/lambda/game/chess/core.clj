@@ -632,7 +632,7 @@
              )
 (quote board f1 f2 history)
 
-(defn check-for-promotion [board white? [from to :as move]]
+(defn pawn-promotion [board white? [from to :as move]]
   (let [[x y] from
         [op start-rank] (if white? [- 6] [+ 1])
         front [x (op y 1)]
@@ -676,7 +676,7 @@
                    en-passant-move-xymap (move-en-passant board is-player1-turn false history move-xy)
                     real-move (if en-passant-move-xymap en-passant-move-xymap move-xy)
                     board-after-move (apply-move board real-move)
-                    final-board (check-for-promotion board-after-move is-player1-turn move-xy)]
+                    final-board (pawn-promotion board-after-move is-player1-turn move-xy)]
                (vector false (log channel (merge
                                            {:board final-board
                                             :f1 f1 :f2 f2 :id1 id1 :id2 id2
