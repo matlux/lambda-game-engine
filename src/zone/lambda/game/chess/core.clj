@@ -868,6 +868,10 @@
   (seq-result
    (play-scenario-seq game-step scenario state)))
 
+(defn play-scenario-dbg [scenario & [state]]
+  "Returns whole sequece of game steps at once, useful for debugging as it allows to browse/save intermediate steps"
+  (play-scenario-seq game-step scenario state))
+
 (comment
   (take 10 (play-scenario  [["e2" "e4"] ["e7" "e5"]
                     ["d1" "h5"] ["d7" "d6"]
