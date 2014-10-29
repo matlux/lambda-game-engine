@@ -210,11 +210,6 @@
         front [x (op y 1)]
         front2 [x (op y 2)]
         moves (vector
-               (when (and
-                      (pos-xy-within-board? front)
-                      (not (pos-xy-within-board? front2))
-                      (not (collid? board front)))
-                 {:move-to front :promote-to (if white? :Q :q)})
                (when (and (pos-xy-within-board? right-diag)
                           (collid-oposite? board white? right-diag))
                  {:move-to right-diag} )
@@ -651,6 +646,18 @@
              )
 (quote board f1 f2 history)
 
+(defn pawn-promotion [board white? [from to :as move]]
+  (let [[x y] from
+        [op start-rank] (if white? [- 6] [+ 1])
+        front [x (op y 1)]
+        front2 [x (op y 2)]]
+    (if (and
+         (= (if white? :P :p) (get board (apply index-xy to)))
+             (pos-xy-within-board? front)
+             (not (pos-xy-within-board? front2)))
+      (assoc board (apply index-xy to) (if white? :Q :q))
+      board)))
+
 
 
 ;;(display-board (apply-move-safe (initial-board) true false ["a2" "b3"]))
@@ -681,17 +688,14 @@
               (vector true {:score (forfeit is-player1-turn) :history new-history :board board :result :invalid-move})
               (let [
                    move-xy (move2move-xy  norm-move)
-                    en-passant-move-xymap (move-en-passant board is-player1-turn false history move-xy)
-                    promotion-move-xymap (promotion-move board is-player1-turn false history move-xy)
-                    real-move (if en-passant-move-xymap en-passant-move-xymap
-                                  (if promotion-move-xymap promotion-move-xymap  move-xy))]
-                ;(println "promotion-move" promotion-move-xymap)
-                ;(println "all-possible-moves.. " (all-possible-moves-with-in-check board is-player1-turn history))
-                ;(println "f-return " f-return "valid-moves " valid-moves ":state " (get-playing-f-state game-context) "game-context " game-context)
-               ; (println "norm-move (chord) " norm-move "real-move (X Y) "  real-move "move " move)
+                   en-passant-move-xymap (move-en-passant board is-player1-turn false history move-xy)
+                    real-move (if en-passant-move-xymap en-passant-move-xymap move-xy)
+                    board-after-move (apply-move board real-move)
+                    final-board (pawn-promotion board-after-move is-player1-turn move-xy)]
+
                (vector false (log channel (merge
-                                    {:board (apply-move board real-move)
-                                     :f1 f1 :f2 f2 :id1 id1 :id2 id2
+                                           {:board final-board
+                                            :f1 f1 :f2 f2 :id1 id1 :id2 id2
                                      :msg-type :in-game-update
                                      :game-id game-id
                                      :is-player1-turn (not is-player1-turn) :history new-history :channel channel :iteration new-iteration}
