@@ -69,6 +69,55 @@
    :P :P :P :P :. :P :P :P
    :R :N :B :. :K :. :N :R])
 
+(def promotion-check-board ;; it's white's turn
+  [:. :. :. :. :k :. :. :.
+   :. :P :. :. :. :. :. :.
+   :. :. :. :. :. :. :. :.
+   :. :. :. :. :. :. :. :.
+   :. :. :. :. :. :. :. :.
+   :. :. :. :. :. :. :. :.
+   :. :. :. :. :. :. :. :.
+   :. :. :. :. :K :. :. :.])
+
+(def promotion-result-board ;; it's white's turn
+  [:. :Q :. :. :k :. :. :.
+   :. :. :. :. :. :. :. :.
+   :. :. :. :. :. :. :. :.
+   :. :. :. :. :. :. :. :.
+   :. :. :. :. :. :. :. :.
+   :. :. :. :. :. :. :. :.
+   :. :. :. :. :. :. :. :.
+   :. :. :. :. :K :. :. :.])
+
+
+(deftest test-promotion
+  (testing ""
+    (is
+     (=
+      (:board (play-scenario  [["b7" "b8"]] {:board promotion-check-board}))
+      promotion-result-board))))
+
+(deftest test-no-promotion-when-not-a-pawn
+  (testing "double checking if not-pawns won't be promoted")
+  (is
+   (=
+    (:board (play-scenario [["b7" "b8"]] {:board  [:. :. :. :. :k :. :. :.
+                                                   :. :K :. :. :. :. :. :.
+                                                   :. :. :. :. :. :. :. :.
+                                                   :. :. :. :. :. :. :. :.
+                                                   :. :. :. :. :. :. :. :.
+                                                   :. :. :. :. :. :. :. :.
+                                                   :. :. :. :. :. :. :. :.
+                                                   :. :. :. :. :R :. :. :.]}))
+     [:. :K :. :. :k :. :. :.
+      :. :. :. :. :. :. :. :.
+      :. :. :. :. :. :. :. :.
+      :. :. :. :. :. :. :. :.
+      :. :. :. :. :. :. :. :.
+      :. :. :. :. :. :. :. :.
+      :. :. :. :. :. :. :. :.
+      :. :. :. :. :R :. :. :.])))
+
 (deftest test-filing
 
   (testing ""

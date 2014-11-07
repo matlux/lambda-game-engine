@@ -210,6 +210,11 @@
         front [x (op y 1)]
         front2 [x (op y 2)]
         moves (vector
+               (when (and
++                      (pos-xy-within-board? front)
++                      (not (pos-xy-within-board? front2))
++                      (not (collid? board front)))
++                 {:move-to front :promote-to (if white? :Q :q)})
                (when (and (pos-xy-within-board? right-diag)
                           (collid-oposite? board white? right-diag))
                  {:move-to right-diag} )
@@ -235,6 +240,7 @@
 
                )
         ]
+    ;(println "pawn-moves" moves)
     (filter (comp not nil?) moves)))
 
 ;;(not (= (lookup-xy (initial-board) [2 1]) :.))
@@ -253,8 +259,10 @@
     (let [[x y] (pos2coord pos)
           last-move (last history)
           moves (pawn-moves board white? last-move x y)
-          no-self-collision? (comp not (partial collid-self? board white?))]
-      (filter #(no-self-collision? (:move-to %)) (filter #(pos-xy-within-board? (:move-to %)) moves)))))
+          no-self-collision? (comp not (partial collid-self? board white?))
+          moves-filtered (filter #(no-self-collision? (:move-to %)) (filter #(pos-xy-within-board? (:move-to %)) moves))]
+     ; (println "getMoves" moves-filtered)
+      moves-filtered)))
 
 
 ;;(->> (Pawn. (en-passant-check-test) "d5" white [[(pos2coord "e7") (pos2coord "e5")]]) getMoves first meta)
@@ -503,15 +511,19 @@
 (defn apply-move [^PersistentVector board ^PersistentVector move] ;; xy or xymap
   (let [[from to] move
         en-passant (:en-passant to)
+        promote-to (:promote-to to)
         taken (:taken to)
         b (:board to)
-        real-to (if en-passant (:move-to to) to)
+       ; promote-to (:promote-to to)
+        real-to (if en-passant (:move-to to) (if promote-to (:move-to to) to))
         piece (lookup-xy board from)
+        real-piece (if (nil? promote-to) piece promote-to)
         new-board (-> (assoc board (apply index-xy from) :.)
-                      (assoc (apply index-xy real-to) piece))]
+                        (assoc (apply index-xy real-to) real-piece))]
     (if en-passant
       (assoc new-board (apply index-xy taken) :.)
-      new-board)))
+      new-board)
+    ))
 
 ;;(display-board (apply-move (initial-board) ["b2" "b3"]))
 
@@ -559,6 +571,13 @@
     (first (filter #(let [[from {to :move-to :as tomap}] %] (and (= move [from to])
                           (:en-passant tomap)))
                    moves-xy-map))))
+
+(defn promotion-move [^PersistentVector board ^Boolean is-player1-turn ^Boolean castle? ^PersistentVector history ^PersistentVector move]
+  (let [moves-xy-map (all-possible-moves-with-in-check board is-player1-turn history)]
+    (first (filter #(let [[from {to :move-to :as tomap}] %] (and (= move [from to])
+                          (:promote-to tomap)))
+                   moves-xy-map))))
+
 ;;(play-scenario [["e2" "e4"] ["d7" "d5"] ["e4" "d5"] ["e7" "e5"] ["d5" "e6"] ["d5" "e6"]])
 
 ;;(is-move-valid? (en-passant-check-test) white false (move2move-xy-vec [["c7" "c5"]]) (move2move-xy ["d5" "c6"]))
@@ -632,6 +651,20 @@
              )
 (quote board f1 f2 history)
 
+(defn pawn-promotion [board white? [from to :as move]]
+  (let [[x y] from
+        [op start-rank] (if white? [- 6] [+ 1])
+        front [x (op y 1)]
+        front2 [x (op y 2)]]
+    (if (and
+         (= (if white? :P :p) (get board (apply index-xy to)))
+             (pos-xy-within-board? front)
+             (not (pos-xy-within-board? front2)))
+      (assoc board (apply index-xy to) (if white? :Q :q))
+      board)))
+
+
+
 ;;(display-board (apply-move-safe (initial-board) true false ["a2" "b3"]))
 (defn play-game-step [{:keys [board f1 f2 id1 id2 is-player1-turn history state-f1 state-f2 iteration channel game-id] :as game-context}]
   {:pre [(display-assert (and (some? board) (some? history)) board history)]}
@@ -661,10 +694,13 @@
               (let [
                    move-xy (move2move-xy  norm-move)
                    en-passant-move-xymap (move-en-passant board is-player1-turn false history move-xy)
-                   real-move (if en-passant-move-xymap en-passant-move-xymap move-xy)]
+                    real-move (if en-passant-move-xymap en-passant-move-xymap move-xy)
+                    board-after-move (apply-move board real-move)
+                    final-board (pawn-promotion board-after-move is-player1-turn move-xy)]
+
                (vector false (log channel (merge
-                                    {:board (apply-move board real-move)
-                                     :f1 f1 :f2 f2 :id1 id1 :id2 id2
+                                           {:board final-board
+                                            :f1 f1 :f2 f2 :id1 id1 :id2 id2
                                      :msg-type :in-game-update
                                      :game-id game-id
                                      :is-player1-turn (not is-player1-turn) :history new-history :channel channel :iteration new-iteration}
@@ -807,8 +843,11 @@
 ;;                                    result)))
 
 
-(defn play-scenario-seq [step scenario] (let [[f1 f2] (create-fns-from-scenario scenario)]
-                                 (let [result (play-game-seq step {:board (initial-board) :history [] :f1 f1 :f2 f2})]
+(defn play-scenario-seq [step scenario & [state]] (let [[f1 f2] (create-fns-from-scenario scenario)]
+                                                  (let [result (play-game-seq step
+                                                                              (merge
+                                                                               {:board (initial-board) :history [] :f1 f1 :f2 f2}
+                                                                               state))]
                                    (take (count scenario) result))))
 
 ;; (defn play-scenario-seq [scenario]
@@ -825,9 +864,13 @@
 ;;(game-step (merge {:board (initial-board) :f1  (fn [_] ["e8" "A4"]) :f2 (fn [_] ["e8" "A4"])} {:board (initial-board) :history []}))
 
 
-(defn play-scenario [scenario]
+(defn play-scenario [scenario & [state]]
   (seq-result
-   (play-scenario-seq game-step scenario)))
+   (play-scenario-seq game-step scenario state)))
+
+(defn play-scenario-dbg [scenario & [state]]
+  "Returns whole sequece of game steps at once, useful for debugging as it allows to browse/save intermediate steps"
+  (play-scenario-seq game-step scenario state))
 
 (comment
   (take 10 (play-scenario  [["e2" "e4"] ["e7" "e5"]
